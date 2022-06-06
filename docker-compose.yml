@@ -1,0 +1,28 @@
+version: "3.1"
+services:
+
+    mysql:
+      image: mysql:5.5
+      container_name: symfony4.test
+      working_dir: /application
+      volumes:
+        - ./symfony:/application
+      environment:
+        - MYSQL_ROOT_PASSWORD=symfony4
+        - MYSQL_DATABASE=symfony4
+        - MYSQL_USER=symfony4
+        - MYSQL_PASSWORD=symfony4
+      ports:
+        - "9002:3306"
+    
+    site:
+        build: .
+        container_name: symfony4-test-linux
+        ports:
+            - "83:80"
+        expose:
+            - "80"
+        depends_on:
+            - mysql
+        volumes:
+        - ./symfony:/application
