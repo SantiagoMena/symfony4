@@ -3,7 +3,7 @@ services:
 
     mysql:
       image: mysql:5.5
-      container_name: symfony4.test
+      container_name: symfony4-mysql
       working_dir: /application
       volumes:
         - ./symfony:/application
@@ -15,14 +15,29 @@ services:
       ports:
         - "9002:3306"
     
+    mysql.test:
+      image: mysql:5.5
+      container_name: symfony4-mysql-test
+      working_dir: /application
+      volumes:
+        - ./symfony:/application
+      environment:
+        - MYSQL_ROOT_PASSWORD=symfony4test
+        - MYSQL_DATABASE=symfony4test
+        - MYSQL_USER=symfony4test
+        - MYSQL_PASSWORD=symfony4test
+      ports:
+        - "9003:3306"
+
     site:
         build: .
-        container_name: symfony4-test-linux
+        container_name: symfony4-linux
         ports:
             - "83:80"
         expose:
             - "80"
         depends_on:
             - mysql
+            - mysql.test
         volumes:
         - ./symfony:/application

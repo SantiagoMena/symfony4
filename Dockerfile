@@ -5,9 +5,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update
 RUN apt-get install -y php apache2 libapache2-mod-php php-mysql php-intl git git-core curl php-curl php-xml composer zip unzip php-zip php-mbstring php-gd
 # Install Symfony
-echo 'deb [trusted=yes] https://repo.symfony.com/apt/ /' | tee /etc/apt/sources.list.d/symfony-cli.list
-apt update
-apt install symfony-cli
+RUN echo 'deb [trusted=yes] https://repo.symfony.com/apt/ /' | tee /etc/apt/sources.list.d/symfony-cli.list
+RUN apt update
+RUN apt install symfony-cli
 # Configure Apache
 RUN rm -rf /var/www/* \
     && a2enmod rewrite \
