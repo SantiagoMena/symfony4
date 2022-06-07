@@ -7,17 +7,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
 use App\AssetVersionStrategy\DateVersionStrategy;
+use Symfony\Component\Asset\PathPackage;
 
 class ComponentController extends AbstractController
 {
     public function assets()
     {
+        // Paquete de activos sin versión
         $package = new Package(new EmptyVersionStrategy());
-        // %2$s => version_string ; %1$s => asset_dir_string
+
+        // Paquete de activos con versión --> %2$s => version_string ; %1$s => asset_dir_string
         $packageV1 = new Package(new StaticVersionStrategy('v1', '%2$s/%1$s'));
 
-
+        // Paquete de activos con versión personalizada
         $packageDateVersion = new Package(new DateVersionStrategy());
+
+        // Paquete de activos agrupados por carpetas
+        $pathPackage = new PathPackage('css', new EmptyVersionStrategy());
 
         return new Response
         ("
@@ -26,10 +32,12 @@ class ComponentController extends AbstractController
                     <link rel=\"stylesheet\" href=\"". $package->getUrl("/css/test_assets.css") . "\">
                     <link rel=\"stylesheet\" href=\"". $packageV1->getUrl("/css/test_assets.css") . "\">
                     <link rel=\"stylesheet\" href=\"". $packageDateVersion->getUrl("/css/test_assets.css") . "\">
+                    <link rel=\"stylesheet\" href=\"". $pathPackage->getUrl("test_assets_package.css") . "\">
                 </head>
                 <body>
                     <p>Test Assets</p>
-                    <b>Test Assets</b>
+                    <b>Test Assets Versión</b>
+                    <a>Test Assets Package</a>
                 </body>
             </html>
         ");
