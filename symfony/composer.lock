@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b1e31c2281c61cee51f9a86e7b7451a2",
+    "content-hash": "95fae6c36bf05c7d4d35e5cdfdef07d4",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -2358,6 +2358,7 @@
             ],
             "description": "Provides tools to ease debugging PHP code",
             "homepage": "https://symfony.com",
+            "abandoned": "symfony/error-handler",
             "time": "2022-04-12T15:19:55+00:00"
         },
         {
