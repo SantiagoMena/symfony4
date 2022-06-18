@@ -88,6 +88,20 @@ class RoutesControllerTest extends WebTestCase
         $this->assertSelectorTextSame('h1', 'Ejemplo de variable Slug Default: defaultAnnotation');
     }
 
+    public function testEjempleParamConverter(): void
+    {
+        $post = [
+            'id' => 1,
+            'title' => "New Post"
+        ];
+
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/routes/ejemploParamConverter/'.$post['id']);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', $post['title']);
+    } 
+
     public function dataMethods()
     {
         yield ['ejemploGet', 'GET'];

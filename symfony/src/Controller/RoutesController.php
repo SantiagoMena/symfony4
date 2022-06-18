@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Post;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class RoutesController extends AbstractController
 {
@@ -156,6 +157,16 @@ class RoutesController extends AbstractController
     {
         return $this->render('routes/index.html.twig', [
             'title' => 'Ejemplo de variable Slug Default: '.$slug,
+        ]);
+    }
+
+    /**
+     * @Route("/routes/ejemploParamConverter/{id}", name="app_post_view", methods={"HEAD", "GET"})
+     */
+    public function ejemploParamConverter(Post $post): Response
+    {
+        return $this->render('post/index.html.twig', [
+            'title' => $post->getTitle(),
         ]);
     }
 }
