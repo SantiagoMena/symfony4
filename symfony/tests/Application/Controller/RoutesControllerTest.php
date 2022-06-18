@@ -47,6 +47,17 @@ class RoutesControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Ejemplo de variable Slug: '.$slug);
     }
 
+    public function testEjemploVariableExpresionRegular(): void
+    {
+        $client = static::createClient();
+        $codigoEntero = random_int(0, 8);
+        $crawler = $client->request('GET', '/routes/ejemploVariableSlug/'. $codigoEntero);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Ejemplo de variable con requisito de expresión regular (entero): '.$codigoEntero);
+
+    }
+
     public function dataMethods()
     {
         yield ['ejemploGet', 'GET'];

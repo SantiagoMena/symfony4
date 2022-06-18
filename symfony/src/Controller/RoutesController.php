@@ -95,6 +95,19 @@ class RoutesController extends AbstractController
     }
 
     /**
+     * @Route("/routes/ejemploVariableSlug/{codigoEntero}", requirements={"codigoEntero"="\d+"})
+     *
+     * @param integer $codigoEntero
+     * @return Response
+     */
+    public function ejemploVariableExpresionRegular(int $codigoEntero): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Ejemplo de variable con requisito de expresión regular (entero): '. $codigoEntero
+        ]);
+    }
+
+    /**
      * @Route("/routes/ejemploVariableSlug/{slug}", name="app_route_ejemplo_variable_slug", methods={"GET"})
      *
      * @param string $slug
