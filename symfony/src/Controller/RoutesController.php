@@ -169,4 +169,23 @@ class RoutesController extends AbstractController
             'title' => $post->getTitle(),
         ]);
     }
+
+    /**
+     * @Route( 
+     * "/articles/{_locale}/search.{_format}", 
+     *   locale="en", 
+     *   format="html|json", 
+     *   requirements={ 
+     *     "_locale": "en|fr|es", 
+     *     "_format": "html|xml|json", 
+     *   } 
+     * )
+     * @return Response
+     */
+    public function ejemploParametrosEspeciales(): Response
+    {
+        return new Response(\json_encode([
+            'response' => 'JSON Format'
+        ]));
+    }
 }
