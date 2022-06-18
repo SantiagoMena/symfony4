@@ -93,6 +93,19 @@ class RoutesController extends AbstractController
             'title' => 'Ejemplo de condiciones Chrome'
         ]);
     }
+    /**
+     * @Route("/routes/ejemploVariableSlug/{page<\p{L}\d+>}", utf8="true")
+     *
+     * @param string $page
+     * @return Response
+     */
+    public function ejemploVariableUnicode(string $page): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Ejemplo de variable unicode: '.$page,
+        ]);
+    }
+
 
     /**
      * @Route("/routes/ejemploVariableSlug/{codigoEntero}", requirements={"codigoEntero"="\d+"})

@@ -58,6 +58,18 @@ class RoutesControllerTest extends WebTestCase
 
     }
 
+    public function testEjemploVariableUnicode(): void
+    {
+        $client = static::createClient();
+        $stringVar = str_shuffle('asdfghjkl')[0];
+        $intVar = random_int(0, 9);
+        $var = $stringVar.$intVar;
+        $crawler = $client->request('GET', '/routes/ejemploVariableSlug/'. $var);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Ejemplo de variable unicode: '.$var);
+    }
+
     public function dataMethods()
     {
         yield ['ejemploGet', 'GET'];
