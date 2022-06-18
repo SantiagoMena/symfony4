@@ -67,7 +67,7 @@ class RoutesController extends AbstractController
     /** 
     * @Route( 
     *   "/routes/ejemploCondicionesFirefox", 
-    *   name="app_routes_ejemplo_condicionesFirefox", 
+    *   name="app_routes_ejemplo_condiciones_firefox", 
     *   condition="context.getMethod() in ['GET', 'HEAD']" 
     * ) 
     * * expressions can also include configuration parameters: * condition: "request.headers.get('User-Agent') matches '%app.allowed_browsers%'" 
@@ -82,7 +82,7 @@ class RoutesController extends AbstractController
     /**  
     * @Route( 
     *   "/routes/ejemploCondicionesChrome", 
-    *   name="app_routes_ejemplo_condicionesChrome", 
+    *   name="app_routes_ejemplo_condiciones_chrome", 
     *   condition="context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-Agent') matches '/chrome/i'" 
     * ) 
     * * expressions can also include configuration parameters: * condition: "request.headers.get('User-Agent') matches '%app.allowed_browsers%'" 
@@ -91,6 +91,19 @@ class RoutesController extends AbstractController
     {
         return $this->render('routes/index.html.twig', [
             'title' => 'Ejemplo de condiciones Chrome'
+        ]);
+    }
+
+    /**
+     * @Route("/routes/ejemploVariableSlug/{slug}", name="app_route_ejemplo_variable_slug", methods={"GET"})
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function ejemploVariableSlug(string $slug): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Ejemplo de variable Slug: '.$slug,
         ]);
     }
 }

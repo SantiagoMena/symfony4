@@ -3,7 +3,6 @@
 namespace App\Tests\Application\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\HttpBrowser;
 
 class RoutesControllerTest extends WebTestCase
 {
@@ -27,7 +26,7 @@ class RoutesControllerTest extends WebTestCase
     }
 
     /** @dataProvider dataUserAgents */
-    public function testEjemplosCondiciones($browser, $userAgent)
+    public function testEjemplosCondiciones($browser, $userAgent): void
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/routes/ejemploCondiciones'.$browser, [], [], [
@@ -36,6 +35,16 @@ class RoutesControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Ejemplo de condiciones '.$browser);
+    }
+
+    public function testEjemplosVariableSlug(): void
+    {
+        $client = static::createClient();
+        $slug = "Slug-Test";
+        $crawler = $client->request('GET', '/routes/ejemploVariableSlug/'. $slug);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Ejemplo de variable Slug: '.$slug);
     }
 
     public function dataMethods()
