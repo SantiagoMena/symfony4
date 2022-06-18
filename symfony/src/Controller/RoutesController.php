@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class RoutesController extends AbstractController
 {
@@ -60,6 +61,36 @@ class RoutesController extends AbstractController
     {
         return $this->render('routes/index.html.twig', [
             'title' => 'Ejemplo de rutas DELETE'
+        ]);
+    }
+
+    /** 
+    * @Route( 
+    *   "/routes/ejemploCondicionesFirefox", 
+    *   name="app_routes_ejemplo_condicionesFirefox", 
+    *   condition="context.getMethod() in ['GET', 'HEAD']" 
+    * ) 
+    * * expressions can also include configuration parameters: * condition: "request.headers.get('User-Agent') matches '%app.allowed_browsers%'" 
+    */
+    public function ejemploCondicionesFirefox(Request $request): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Ejemplo de condiciones Firefox '.$request->headers->get('User-Agent')
+        ]);
+    }
+
+    /**  
+    * @Route( 
+    *   "/routes/ejemploCondicionesChrome", 
+    *   name="app_routes_ejemplo_condicionesChrome", 
+    *   condition="context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-Agent') matches '/chrome/i'" 
+    * ) 
+    * * expressions can also include configuration parameters: * condition: "request.headers.get('User-Agent') matches '%app.allowed_browsers%'" 
+    */
+    public function ejemploCondicionesChrome(): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Ejemplo de condiciones Chrome'
         ]);
     }
 }
