@@ -70,6 +70,24 @@ class RoutesControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Ejemplo de variable unicode: '.$var);
     }
 
+    public function testEjemploVariableSlugDefault(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/routes/ejemploVariableSlugDefault');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', 'Ejemplo de variable Slug Default: default');
+    }
+
+    public function testEjemploVariableSlugDefaultAnnotation(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/routes/ejemploVariableSlugDefaultAnnotation');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', 'Ejemplo de variable Slug Default: defaultAnnotation');
+    }
+
     public function dataMethods()
     {
         yield ['ejemploGet', 'GET'];

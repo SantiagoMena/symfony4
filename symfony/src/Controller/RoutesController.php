@@ -121,7 +121,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploVariableSlug/{slug}", name="app_route_ejemplo_variable_slug", methods={"GET"})
+     * @Route("/routes/ejemploVariableSlug/{slug}", name="app_route_ejemplo_variable_slug", methods={"GET", "HEAD"})
      *
      * @param string $slug
      * @return Response
@@ -130,6 +130,32 @@ class RoutesController extends AbstractController
     {
         return $this->render('routes/index.html.twig', [
             'title' => 'Ejemplo de variable Slug: '.$slug,
+        ]);
+    }
+
+    /**
+     * @Route("/routes/ejemploVariableSlugDefault/{slug}", name="app_route_ejemplo_variable_slug_default", methods={"GET", "HEAD"})
+     *
+     * @param string $slug
+     * @return void
+     */
+    public function ejemploVariableSlugDefault(string $slug = 'default'): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Ejemplo de variable Slug Default: '.$slug,
+        ]);
+    }
+
+    /**
+     * @Route("/routes/ejemploVariableSlugDefaultAnnotation/{slug<\C+>?defaultAnnotation}", name="app_route_ejemplo_variable_slug_default_annotations", methods={"GET", "HEAD"})
+     *
+     * @param string $slug
+     * @return void
+     */
+    public function ejemploVariableSlugDefaultAnnotation(string $slug): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Ejemplo de variable Slug Default: '.$slug,
         ]);
     }
 }
