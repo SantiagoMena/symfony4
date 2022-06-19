@@ -8,10 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @Route("/routes", name="routes_")
+ */
 class RoutesController extends AbstractController
 {
     /**
-     * @Route("/routes/ejemplo", name="app_routes_ejemplo")
+     * @Route("/ejemplo", name="app_routes_ejemplo")
      * @return Response
      */
     public function ejemplo(): Response
@@ -22,7 +25,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploGet", name="app_routes_ejemplo_get", methods={"GET", "HEAD"})
+     * @Route("/ejemploGet", name="app_routes_ejemplo_get", methods={"GET", "HEAD"})
      * @return Response
      */
     public function ejemploGet(): Response
@@ -33,7 +36,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploPost", name="app_routes_ejemplo_post", methods={"POST"})
+     * @Route("/ejemploPost", name="app_routes_ejemplo_post", methods={"POST"})
      * @return Response
      */
     public function ejemploPost(): Response
@@ -44,7 +47,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploPut", name="app_routes_ejemplo_put", methods={"PUT"})
+     * @Route("/ejemploPut", name="app_routes_ejemplo_put", methods={"PUT"})
      * @return Response
      */
     public function ejemploPut(): Response
@@ -55,7 +58,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @route("/routes/ejemploDelete", name="app_routes_ejemplo_delete", methods={"DELETE"})
+     * @Route("/ejemploDelete", name="app_routes_ejemplo_delete", methods={"DELETE"})
      * @return Response
      */
     public function ejemploDelete(): Response
@@ -95,7 +98,7 @@ class RoutesController extends AbstractController
         ]);
     }
     /**
-     * @Route("/routes/ejemploVariableSlug/{page<\p{L}\d+>}", utf8="true")
+     * @Route("/ejemploVariableSlug/{page<\p{L}\d+>}", utf8="true")
      *
      * @param string $page
      * @return Response
@@ -109,7 +112,7 @@ class RoutesController extends AbstractController
 
 
     /**
-     * @Route("/routes/ejemploVariableSlug/{codigoEntero}", requirements={"codigoEntero"="\d+"})
+     * @Route("/ejemploVariableSlug/{codigoEntero}", requirements={"codigoEntero"="\d+"})
      *
      * @param integer $codigoEntero
      * @return Response
@@ -122,7 +125,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploVariableSlug/{slug}", name="app_route_ejemplo_variable_slug", methods={"GET", "HEAD"})
+     * @Route("/ejemploVariableSlug/{slug}", name="app_route_ejemplo_variable_slug", methods={"GET", "HEAD"})
      *
      * @param string $slug
      * @return Response
@@ -135,7 +138,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploVariableSlugDefault/{slug}", name="app_route_ejemplo_variable_slug_default", methods={"GET", "HEAD"})
+     * @Route("/ejemploVariableSlugDefault/{slug}", name="app_route_ejemplo_variable_slug_default", methods={"GET", "HEAD"})
      *
      * @param string $slug
      * @return void
@@ -148,7 +151,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploVariableSlugDefaultAnnotation/{slug<\C+>?defaultAnnotation}", name="app_route_ejemplo_variable_slug_default_annotations", methods={"GET", "HEAD"})
+     * @Route("/ejemploVariableSlugDefaultAnnotation/{slug<\C+>?defaultAnnotation}", name="app_route_ejemplo_variable_slug_default_annotations", methods={"GET", "HEAD"})
      *
      * @param string $slug
      * @return void
@@ -161,7 +164,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploParamConverter/{id}", name="app_post_view", methods={"HEAD", "GET"})
+     * @Route("/ejemploParamConverter/{id}", name="app_post_view", methods={"HEAD", "GET"})
      */
     public function ejemploParamConverter(Post $post): Response
     {
@@ -190,7 +193,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/routes/ejemploParametrosAdicionales/{slug}/{title}", defaults={"slug": "slug", "title": "Parametros "})
+     * @Route("/ejemploParametrosAdicionales/{slug}/{title}", defaults={"slug": "slug", "title": "Parametros "})
      *
      * @return Response
      */
@@ -201,9 +204,8 @@ class RoutesController extends AbstractController
         ]);
     }
 
-
     /**
-     * @Route("/routes/ejemploCaracteresEspeciales/{slugCaracteresEspeciales}", requirements={"slugCaracteresEspeciales"=".+"})
+     * @Route("/ejemploCaracteresEspeciales/{slugCaracteresEspeciales}", requirements={"slugCaracteresEspeciales"=".+"})
      *
      * @return Response
      */
