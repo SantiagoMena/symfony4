@@ -126,6 +126,16 @@ class RoutesControllerTest extends WebTestCase
         $this->assertSelectorTextSame('h1', $title.$slug);
     }
 
+    public function testEjemploCaracteresEspeciales(): void
+    {
+        $client = static::createClient();
+        $slug = "test/caracteres/especiales";
+        $crawler = $client->request('GET', '/routes/ejemploCaracteresEspeciales/'.$slug);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', $slug);
+    }
+
     public function dataMethods()
     {
         yield ['ejemploGet', 'GET'];

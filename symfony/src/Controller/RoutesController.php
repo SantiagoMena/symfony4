@@ -200,4 +200,17 @@ class RoutesController extends AbstractController
             'title' => $title.$slug,
         ]);
     }
+
+
+    /**
+     * @Route("/routes/ejemploCaracteresEspeciales/{slugCaracteresEspeciales}", requirements={"slugCaracteresEspeciales"=".+"})
+     *
+     * @return Response
+     */
+    public function ejemploCaracteresEspeciales(string $slugCaracteresEspeciales): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => $slugCaracteresEspeciales
+        ]);
+    }
 }
