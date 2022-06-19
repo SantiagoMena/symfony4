@@ -188,4 +188,16 @@ class RoutesController extends AbstractController
             'response' => 'JSON Format'
         ]));
     }
+
+    /**
+     * @Route("/routes/ejemploParametrosAdicionales/{slug}/{title}", defaults={"slug": "slug", "title": "Parametros "})
+     *
+     * @return Response
+     */
+    public function ejemploParametrosAdicionales(string $slug, string $title): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => $title.$slug,
+        ]);
+    }
 }
