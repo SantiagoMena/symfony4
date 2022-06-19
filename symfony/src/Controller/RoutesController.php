@@ -172,7 +172,7 @@ class RoutesController extends AbstractController
 
     /**
      * @Route( 
-     * "/articles/{_locale}/search.{_format}", 
+     * "/routes/ejemploParametrosEspeciales/{_locale}/search.{_format}", 
      *   locale="en", 
      *   format="html|json", 
      *   requirements={ 

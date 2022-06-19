@@ -105,7 +105,7 @@ class RoutesControllerTest extends WebTestCase
     public function testEjemploParametrosEspeciales(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/articles/es/search.json', [], [], [
+        $crawler = $client->request('GET', '/routes/ejemploParametrosEspeciales/es/search.json', [], [], [
             'headers' => [
                 'Content-Type' => 'application/json'
             ]
