@@ -164,7 +164,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/ejemploParamConverter/{id}", name="app_post_view", methods={"HEAD", "GET"})
+     * @Route("/ejemploParamConverter/{id}", name="app_route_ejemplo_param_converter", methods={"HEAD", "GET"})
      */
     public function ejemploParamConverter(Post $post): Response
     {
@@ -193,7 +193,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/ejemploParametrosAdicionales/{slug}/{title}", defaults={"slug": "slug", "title": "Parametros "})
+     * @Route("/ejemploParametrosAdicionales/{slug}/{title}", name="app_route_ejemplo_parametros_adicionales", defaults={"slug": "slug", "title": "Parametros "})
      *
      * @return Response
      */
@@ -205,7 +205,7 @@ class RoutesController extends AbstractController
     }
 
     /**
-     * @Route("/ejemploCaracteresEspeciales/{slugCaracteresEspeciales}", requirements={"slugCaracteresEspeciales"=".+"})
+     * @Route("/ejemploCaracteresEspeciales/{slugCaracteresEspeciales}", name="app_route_ejemplo_caracteres_especiales", requirements={"slugCaracteresEspeciales"=".+"})
      *
      * @return Response
      */
@@ -213,6 +213,21 @@ class RoutesController extends AbstractController
     {
         return $this->render('routes/index.html.twig', [
             'title' => $slugCaracteresEspeciales
+        ]);
+    }
+
+    /**
+     * Ejemplo nombre de rutas
+     * 
+     * @Route("/ejemploNombreRuta", methods={"GET", "HEAD"}, name="app_route_ejemplo_nombre_ruta")
+     *
+     * @return Response
+     */
+    public function ejemploNombreRuta(Request $request): Response
+    {
+        $route = $request->attributes->get('_route');
+        return $this->render('routes/index.html.twig', [
+            'title' => $route,
         ]);
     }
 }
