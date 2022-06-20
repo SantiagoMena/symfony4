@@ -70,7 +70,7 @@ class RoutesController extends AbstractController
 
     /** 
     * @Route( 
-    *   "/routes/ejemploCondicionesFirefox", 
+    *   "/ejemploCondicionesFirefox", 
     *   name="app_routes_ejemplo_condiciones_firefox", 
     *   condition="context.getMethod() in ['GET', 'HEAD']" 
     * ) 
@@ -85,7 +85,7 @@ class RoutesController extends AbstractController
 
     /**  
     * @Route( 
-    *   "/routes/ejemploCondicionesChrome", 
+    *   "/ejemploCondicionesChrome", 
     *   name="app_routes_ejemplo_condiciones_chrome", 
     *   condition="context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-Agent') matches '/chrome/i'" 
     * ) 
@@ -175,7 +175,7 @@ class RoutesController extends AbstractController
 
     /**
      * @Route( 
-     * "/routes/ejemploParametrosEspeciales/{_locale}/search.{_format}", 
+     * "/ejemploParametrosEspeciales/{_locale}/search.{_format}", 
      *   locale="en", 
      *   format="html|json", 
      *   requirements={ 
@@ -229,5 +229,17 @@ class RoutesController extends AbstractController
         return $this->render('routes/index.html.twig', [
             'title' => $route,
         ]);
+    }
+
+    /**
+     * Ejemplo nombre de parametros
+     *
+     * @Route("/ejemploObtenerParametrosArray-{slug}.{_format}", format="json", methods={"GET", "HEAD"}, name="app_route_ejemplo_nombre_parametro")
+     * @param Request $request
+     * @return Response
+     */
+    public function ejemploObtenerArrayParametros(string $slug, Request $request): Response
+    {
+        return new Response(\json_encode($request->attributes->get('_route_params')));
     }
 }

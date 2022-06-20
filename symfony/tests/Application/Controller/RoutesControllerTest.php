@@ -145,6 +145,17 @@ class RoutesControllerTest extends WebTestCase
         $this->assertSelectorTextSame('h1', 'routes_app_route_ejemplo_nombre_ruta');
     }
 
+    public function testEjemploObtenerParametros(): void
+    {
+        $client = static::createClient();
+        $slug = 'slug';
+        $format = 'json';
+        $crawler = $client->request('GET', '/routes/ejemploObtenerParametrosArray-'.$slug.$format);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertJson(\json_encode([ 'format' => $format, 'slug' => $slug ]));
+    }
+
     public function dataMethods()
     {
         yield ['ejemploGet', 'GET'];
