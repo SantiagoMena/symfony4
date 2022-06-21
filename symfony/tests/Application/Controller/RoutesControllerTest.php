@@ -25,6 +25,14 @@ class RoutesControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Ejemplo de rutas ' . $method);
     }
 
+    public function dataMethods()
+    {
+        yield ['ejemploGet', 'GET'];
+        yield ['ejemploPost', 'POST'];
+        yield ['ejemploPut', 'PUT'];
+        yield ['ejemploDelete', 'DELETE'];
+    }
+
     /** @dataProvider dataUserAgents */
     public function testEjemplosCondiciones($browser, $userAgent): void
     {
@@ -35,6 +43,12 @@ class RoutesControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Ejemplo de condiciones '.$browser);
+    }
+
+    public function dataUserAgents()
+    {
+        yield ['Firefox', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:103.0) Gecko/20100101 Firefox/103.0'];
+        yield ['Chrome', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'];
     }
 
     public function testEjemplosVariableSlug(): void
@@ -156,17 +170,13 @@ class RoutesControllerTest extends WebTestCase
         $this->assertJson(\json_encode([ 'format' => $format, 'slug' => $slug ]));
     }
 
-    public function dataMethods()
+    public function testEjemploRedireccionar(): void
     {
-        yield ['ejemploGet', 'GET'];
-        yield ['ejemploPost', 'POST'];
-        yield ['ejemploPut', 'PUT'];
-        yield ['ejemploDelete', 'DELETE'];
-    }
+        $client = static::createClient();
+        $slug = 'redirigido';
 
-    public function dataUserAgents()
-    {
-        yield ['Firefox', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:103.0) Gecko/20100101 Firefox/103.0'];
-        yield ['Chrome', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'];
+        $crawler = $client->request('GET', '/redireccionar');
+
+        $this->assertResponseRedirects('http://localhost/redireccionar/');
     }
 }

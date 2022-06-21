@@ -1,3 +1,13 @@
 test_component_assets:
    path: /component/assets
    controller: App\Controller\ComponentController::assets
+
+ruta_redireccion:
+   path: /redireccionar/
+   controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+   defaults:
+      route: 'routes_redireccion'
+      # true => 301 | false => 302
+      permanent: true
+      keepQueryParams: true
+      keepRequestMethod: true

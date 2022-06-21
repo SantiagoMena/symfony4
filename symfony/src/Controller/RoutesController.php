@@ -242,4 +242,18 @@ class RoutesController extends AbstractController
     {
         return new Response(\json_encode($request->attributes->get('_route_params')));
     }
+
+    /**
+     * Ejemplo Redireccionar
+     * 
+     * @Route("/redireccionado", name="redireccion")
+     * @param string $slug
+     * @return Response
+     */
+    public function ejemploRedireccionar(): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Redirigido'
+        ]);
+    }
 }
