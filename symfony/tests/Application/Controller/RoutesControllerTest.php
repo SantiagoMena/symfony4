@@ -173,10 +173,29 @@ class RoutesControllerTest extends WebTestCase
     public function testEjemploRedireccionar(): void
     {
         $client = static::createClient();
-        $slug = 'redirigido';
-
         $crawler = $client->request('GET', '/redireccionar');
 
         $this->assertResponseRedirects('http://localhost/redireccionar/');
+    }
+
+    public function testEjemploSubodominio(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request(
+            'GET',
+            '/routes/ejemploSubdominio',
+            [],
+            [],
+            ['HTTP_HOST' => 'sub.dominio.com']
+        );
+        
+        $this->assertResponseIsSuccessful();
+    }
+    public function testEjemploSubodominioError(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/routes/ejemploSubdominio');
+        
+        $this->assertResponseStatusCodeSame(404);
     }
 }

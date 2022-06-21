@@ -256,4 +256,16 @@ class RoutesController extends AbstractController
             'title' => 'Redirigido'
         ]);
     }
+
+    /**
+     * Ejemplo Ruta subdominio
+     * @Route("/ejemploSubdominio", host="sub.dominio.com")
+     * @return Response
+     */
+    public function ejemploSubdominio(): Response
+    {
+        return $this->render('routes/index.html.twig', [
+            'title' => 'Subdominio'
+        ]);
+    }
 }
