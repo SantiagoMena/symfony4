@@ -259,13 +259,27 @@ class RoutesController extends AbstractController
 
     /**
      * Ejemplo Ruta subdominio
-     * @Route("/ejemploSubdominio", host="sub.dominio.com")
+     * @Route("/ejemploSubdominio", host="sub.dominio.com") name="app_route_ejemplo_subdominio"
      * @return Response
      */
     public function ejemploSubdominio(): Response
     {
         return $this->render('routes/index.html.twig', [
             'title' => 'Subdominio'
+        ]);
+    }
+
+    /**
+     * Ejemplo generar URL desde controlador
+     *
+     * @Route("/ejemploGenerarUrl", methods={"GET", "HEAD"}, name="app_route_generar_url")
+     * @return Response
+     */
+    public function ejemploGenerarUrl(): Response
+    {
+        $url = $this->generateUrl('routes_app_route_generar_url');
+        return $this->render('routes/index.html.twig', [
+            'title' => $url
         ]);
     }
 }
