@@ -198,4 +198,16 @@ class RoutesControllerTest extends WebTestCase
         
         $this->assertResponseStatusCodeSame(404);
     }
+
+    public function testEjemploGenerarUrl(): void
+    {
+        $client = static::createClient();
+        $router = self::$container->get('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
+        $route = $router->generate('routes_app_route_generar_url');
+
+        $crawler = $client->request('GET', $route);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', $route);
+    }
 }
