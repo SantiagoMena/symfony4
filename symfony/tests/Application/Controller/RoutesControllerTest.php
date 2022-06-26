@@ -210,4 +210,15 @@ class RoutesControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', $route);
     }
+
+    public function testEjemploGenerarUrlJS(): void
+    {
+        $client = static::createClient();
+        $router = self::$container->get('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
+        $route = $router->generate('routes_app_route_generar_url_js');
+
+        $crawler = $client->request('GET', $route);
+
+        $this->assertResponseIsSuccessful();
+    }
 }

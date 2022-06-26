@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<style>
+    .contenedor { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+</style>
+
+<div class="contenedor">
+    <h1 id="title"></h1>
+</div>
+<script> 
+    const route = "{{ path('routes_app_route_generar_url_js')|escape('js') }}";
+    document.getElementById("title").innerHTML = route;
+</script>
+{% endblock %}

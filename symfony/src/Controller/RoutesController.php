@@ -282,4 +282,18 @@ class RoutesController extends AbstractController
             'title' => $url
         ]);
     }
+
+    /**
+     * Ejemplo generar URL desde vista
+     *
+     * @Route("/ejemploGenerarUrlJS", methods={"GET", "HEAD"}, name="app_route_generar_url_js")
+     * @return Response
+     */
+    public function ejemploGenerarUrlJs(): Response
+    {
+        $url = $this->generateUrl('routes_app_route_generar_url_js');
+        return $this->render('routes/index_generate_url.html.twig', [
+            'title' => $url
+        ]);
+    }
 }
