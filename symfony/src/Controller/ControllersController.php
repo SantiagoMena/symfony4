@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ControllersController extends AbstractController
 {
@@ -54,5 +55,19 @@ class ControllersController extends AbstractController
     public function obtenerServicio(LoggerInterface $logger): Response
     {
         return $this->render('controllers/index.html.twig', ['title' => get_class($logger)]);
+    }
+
+    /**
+     * @Route("/controllers/pagina-404")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function pagina404(Request $request): Response
+    {
+        if($request->get('error')) {
+            throw $this->createNotFoundException('Error');
+        }
+        return $this->render('controllers/index.html.twig', ['title' => 'ok']);
     }
 }

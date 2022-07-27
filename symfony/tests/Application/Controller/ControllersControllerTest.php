@@ -48,4 +48,19 @@ class ControllersControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', get_class($router = self::$container->get('Psr\Log\LoggerInterface')));
     }
+
+    public function testErrorPageOk(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/pagina-404');
+
+        $this->assertResponseIsSuccessful();
+    }
+    public function testErrorPage404(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/pagina-404', ['error' => true]);
+        
+        $this->assertResponseStatusCodeSame('404');
+    }
 }
