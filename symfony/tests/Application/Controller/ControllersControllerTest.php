@@ -39,4 +39,13 @@ class ControllersControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'render');
     }
+
+    public function testObtenerServicio(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/obtener-servicio');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', get_class($router = self::$container->get('Psr\Log\LoggerInterface')));
+    }
 }

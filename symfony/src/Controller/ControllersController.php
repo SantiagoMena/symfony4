@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Psr\Log\LoggerInterface;
 
 class ControllersController extends AbstractController
 {
@@ -45,5 +46,13 @@ class ControllersController extends AbstractController
         return $this->render('controllers/render.html.twig', ['text' => 'render']);
     }
 
-    
+    /**
+     * @Route("/controllers/obtener-servicio")
+     *
+     * @return Response
+     */
+    public function obtenerServicio(LoggerInterface $logger): Response
+    {
+        return $this->render('controllers/index.html.twig', ['title' => get_class($logger)]);
+    }
 }
