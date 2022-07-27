@@ -99,4 +99,23 @@ class ControllersControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', 'es');
     }
+
+    public function testParametroGet(): void
+    {
+        $parametro = 'test';
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/parametro-get', ['parametro' => $parametro]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', $parametro);
+    }
+
+    public function testParametroPost(): void
+    {
+        $parametro = 'test-post';
+        $client = static::createClient();
+        $crawler = $client->request('POST', '/controllers/parametro-post', ['parametro' => $parametro]);
+        
+        $this->assertResponseIsSuccessful();
+    }
 }

@@ -123,4 +123,30 @@ class ControllersController extends AbstractController
     {
         return $this->render('controllers/index.html.twig', ['title' => $request->getPreferredLanguage()]);
     }
+
+    /**
+     * @Route("/controllers/parametro-get")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function parametroGet(Request $request): Response
+    {
+        $parametro = $request->query->get('parametro');
+
+        return $this->render('controllers/index.html.twig', ['title' => $parametro]);
+    }
+
+    /**
+     * @Route("/controllers/parametro-post", methods={"POST"})
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function parametroPost(Request $request): Response
+    {
+        $parametro = $request->request->get('parametro');
+
+        return $this->render('controllers/index.html.twig', ['title' => $parametro]);
+    }
 }
