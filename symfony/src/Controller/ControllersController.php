@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ControllersController extends AbstractController
 {
@@ -95,5 +96,20 @@ class ControllersController extends AbstractController
         $this->addFlash('alerta', 'flash');
 
         return $this->render('controllers/relampago.html.twig');
+    }
+
+    /**
+     * @Route("/controllers/consulta-ajax")
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function requestAjax(Request $request): Response
+    {
+        if(!$request->isXmlHttpRequest()) {
+            throw new HttpException(400, 'No es Ajax');
+        }
+
+        return $this->render('controllers/index.html.twig', ['title' => 'ajax']);
     }
 }

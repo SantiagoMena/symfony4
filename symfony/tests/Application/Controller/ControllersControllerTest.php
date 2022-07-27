@@ -4,7 +4,6 @@ namespace App\Tests\Application\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-
 class ControllersControllerTest extends WebTestCase
 {
     public function testIndex(): void
@@ -81,5 +80,14 @@ class ControllersControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', 'flash');
+    }
+
+    public function testAjax(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->xmlHttpRequest('GET', '/controllers/consulta-ajax');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', 'ajax');
     }
 }
