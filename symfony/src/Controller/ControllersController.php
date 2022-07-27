@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ControllersController extends AbstractController
 {
@@ -69,5 +70,18 @@ class ControllersController extends AbstractController
             throw $this->createNotFoundException('Error');
         }
         return $this->render('controllers/index.html.twig', ['title' => 'ok']);
+    }
+
+    /**
+     * @Route("/controllers/sesion")
+     *
+     * @param SessionInterface $session
+     * @return Response
+     */
+    public function session(SessionInterface $session): Response
+    {
+        $session->set('session', 'session_value');
+
+        return $this->render('controllers/index.html.twig', ['title' => $session->get('session')]);
     }
 }

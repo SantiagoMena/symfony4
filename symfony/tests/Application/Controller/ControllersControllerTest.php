@@ -4,6 +4,7 @@ namespace App\Tests\Application\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+
 class ControllersControllerTest extends WebTestCase
 {
     public function testIndex(): void
@@ -62,5 +63,14 @@ class ControllersControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/controllers/pagina-404', ['error' => true]);
         
         $this->assertResponseStatusCodeSame('404');
+    }
+
+    public function testSession(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/sesion');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', 'session_value');
     }
 }
