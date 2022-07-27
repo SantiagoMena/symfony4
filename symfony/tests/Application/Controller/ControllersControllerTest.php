@@ -30,4 +30,13 @@ class ControllersControllerTest extends WebTestCase
 
         $this->assertResponseRedirects();
     }
+
+    public function testRenderizarVista(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/renderirzar-vista');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'render');
+    }
 }

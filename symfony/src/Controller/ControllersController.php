@@ -34,4 +34,16 @@ class ControllersController extends AbstractController
     {
         return $this->redirect('https://symfony.com');
     }
+
+    /**
+     * @Route("/controllers/renderirzar-vista", name="app_controllers_renderizar_vista")
+     *
+     * @return Response
+     */
+    public function renderizarVisra(): Response
+    {
+        return $this->render('controllers/render.html.twig', ['text' => 'render']);
+    }
+
+    
 }
