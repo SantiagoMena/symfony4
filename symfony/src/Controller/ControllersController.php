@@ -84,4 +84,16 @@ class ControllersController extends AbstractController
 
         return $this->render('controllers/index.html.twig', ['title' => $session->get('session')]);
     }
+
+    /**
+     * @Route("/controllers/alerta-relampago")
+     *
+     * @return Response
+     */
+    public function alertasRelampago(): Response
+    {
+        $this->addFlash('alerta', 'flash');
+
+        return $this->render('controllers/relampago.html.twig');
+    }
 }

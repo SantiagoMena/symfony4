@@ -73,4 +73,13 @@ class ControllersControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', 'session_value');
     }
+
+    public function testAlertasRelampago(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/alerta-relampago');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', 'flash');
+    }
 }
