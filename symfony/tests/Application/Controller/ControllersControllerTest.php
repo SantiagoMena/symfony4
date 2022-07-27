@@ -90,4 +90,13 @@ class ControllersControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', 'ajax');
     }
+
+    public function testIdiomaBrowser(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/consulta-idioma', [], [], ['HTTP_ACCEPT_LANGUAGE' => 'es']);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', 'es');
+    }
 }

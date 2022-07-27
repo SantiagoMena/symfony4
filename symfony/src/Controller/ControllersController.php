@@ -112,4 +112,15 @@ class ControllersController extends AbstractController
 
         return $this->render('controllers/index.html.twig', ['title' => 'ajax']);
     }
+
+    /**
+     * @Route("/controllers/consulta-idioma")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function idiomaBrowser(Request $request): Response
+    {
+        return $this->render('controllers/index.html.twig', ['title' => $request->getPreferredLanguage()]);
+    }
 }
