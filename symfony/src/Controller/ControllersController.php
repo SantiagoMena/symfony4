@@ -197,4 +197,16 @@ class ControllersController extends AbstractController
 
         return $this->render('controllers/index.html.twig', ['title' => $galleta]);
     }
+
+    /**
+     * @Route("/controllers/cabeceras")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function headers(Request $request): Response
+    {
+        $host = $request->headers->get('host');
+        return $this->render('controllers/index.html.twig', ['title' => $host]);
+    }
 }

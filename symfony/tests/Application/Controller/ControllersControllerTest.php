@@ -179,4 +179,14 @@ class ControllersControllerTest extends WebTestCase
         $this->assertSelectorTextSame('h1', $cookie_value);
         $this->assertBrowserCookieValueSame($cookie_name, $cookie_value);
     }
+
+    public function testCabeceras(): void
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/controllers/cabeceras');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', 'localhost');
+    }
 }
