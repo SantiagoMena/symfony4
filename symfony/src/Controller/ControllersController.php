@@ -209,4 +209,16 @@ class ControllersController extends AbstractController
         $host = $request->headers->get('host');
         return $this->render('controllers/index.html.twig', ['title' => $host]);
     }
+
+    /**
+     * @Route("/controllers/variables-configuracion")
+     *
+     * @return Response
+     */
+    public function variablesConfiguracion(): Response
+    {
+        $projectDir = $this->getParameter('kernel.project_dir');
+
+        return $this->render('controllers/index.html.twig', ['title' => $projectDir]);
+    }
 }

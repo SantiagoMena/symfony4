@@ -189,4 +189,15 @@ class ControllersControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', 'localhost');
     }
+
+    public function testVariablesConfiguracion(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/variables-configuracion');
+        
+        $parameter = $client->getKernel()->getContainer()->getParameter('kernel.project_dir');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', $parameter);
+    }
 }
