@@ -118,4 +118,17 @@ class ControllersControllerTest extends WebTestCase
         
         $this->assertResponseIsSuccessful();
     }
+
+    public function testObtenerVariablesServidor(): void
+    {
+        $server = 'symfony.test';
+        $client = static::createClient([], [
+            'HTTP_HOST' => $server
+        ]);
+
+        $crawler = $client->request('POST', '/controllers/variables-servidor');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', $server);
+    }
 }

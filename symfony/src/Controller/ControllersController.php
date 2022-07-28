@@ -149,4 +149,17 @@ class ControllersController extends AbstractController
 
         return $this->render('controllers/index.html.twig', ['title' => $parametro]);
     }
+
+    /**
+     * @Route("/controllers/variables-servidor")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function obtenerVariablesServidor(Request $request): Response
+    {
+        $host = $request->server->get('HTTP_HOST');
+
+        return $this->render('controllers/index.html.twig', ['title' => $host]);
+    }
 }
