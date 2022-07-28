@@ -3,6 +3,7 @@
 namespace App\Tests\Application\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ControllersControllerTest extends WebTestCase
 {
@@ -130,5 +131,35 @@ class ControllersControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', $server);
+    }
+
+    public function testObtenerArchivos(): void
+    {
+        $nombreArchivo = 'archivo.jpg';
+
+        // Crear archivo temporal
+        $temp = tmpfile();
+        fwrite($temp, "archivo test");
+        fseek($temp, 0);
+        
+        $datosArchivo = stream_get_meta_data($temp);
+        $archivo = new UploadedFile($datosArchivo['uri'], $nombreArchivo, null, null, true);
+        
+        $client = static::createClient();
+        $crawler = $client->request('POST', '/controllers/archivos', [], ['archivo' => $archivo]);
+        
+        // Eliminar archivo temporal
+        fclose($temp);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', $nombreArchivo);
+    }
+
+    public function testObtenerArchivoError(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('POST', '/controllers/archivos');
+
+        $this->assertResponseStatusCodeSame('400');
     }
 }

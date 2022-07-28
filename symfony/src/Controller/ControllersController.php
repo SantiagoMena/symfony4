@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ControllersController extends AbstractController
 {
@@ -161,5 +162,22 @@ class ControllersController extends AbstractController
         $host = $request->server->get('HTTP_HOST');
 
         return $this->render('controllers/index.html.twig', ['title' => $host]);
+    }
+
+    /**
+     * @Route("/controllers/archivos")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function obtenerArchivos(Request $request): Response
+    {
+        $archivo = $request->files->get('archivo');
+
+        if(!$archivo instanceof UploadedFile) {
+            throw new HttpException(400, "Archivo no encontrado en la solicitud");
+        }
+
+        return $this->render('controllers/index.html.twig', ['title' => $archivo->getClientOriginalName()]);
     }
 }
