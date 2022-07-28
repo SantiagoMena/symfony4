@@ -4,6 +4,7 @@ namespace App\Tests\Application\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\BrowserKit\Cookie;
 
 class ControllersControllerTest extends WebTestCase
 {
@@ -161,5 +162,21 @@ class ControllersControllerTest extends WebTestCase
         $crawler = $client->request('POST', '/controllers/archivos');
 
         $this->assertResponseStatusCodeSame('400');
+    }
+
+    public function testCookies(): void
+    {
+        $client = static::createClient();
+
+        $cookie_value = "galleta_value";
+        $cookie_name = "galleta";
+        $cookie = new Cookie($cookie_name, $cookie_value);
+
+        $client->getCookieJar()->set($cookie);
+        $crawler = $client->request('GET', '/controllers/galletas');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', $cookie_value);
+        $this->assertBrowserCookieValueSame($cookie_name, $cookie_value);
     }
 }

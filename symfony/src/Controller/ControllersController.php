@@ -180,4 +180,21 @@ class ControllersController extends AbstractController
 
         return $this->render('controllers/index.html.twig', ['title' => $archivo->getClientOriginalName()]);
     }
+
+    /**
+     * @Route("/controllers/galletas")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function cookies(Request $request): Response
+    {
+        $galleta = $request->cookies->get('galleta');
+
+        if(is_null($galleta)) {
+            throw new HttpException(500, "La cookie no ha sido preparada");
+        }
+
+        return $this->render('controllers/index.html.twig', ['title' => $galleta]);
+    }
 }
