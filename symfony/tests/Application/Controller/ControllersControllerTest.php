@@ -200,4 +200,13 @@ class ControllersControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', $parameter);
     }
+
+    public function testStreamArchivo(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/controllers/stream-archivo');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('Content-Type', 'application/pdf');
+    }
 }

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ControllersController extends AbstractController
 {
@@ -220,5 +221,17 @@ class ControllersController extends AbstractController
         $projectDir = $this->getParameter('kernel.project_dir');
 
         return $this->render('controllers/index.html.twig', ['title' => $projectDir]);
+    }
+
+    /**
+     * @Route("/controllers/stream-archivo")
+     *
+     * @return Response
+     */
+    public function streamArchivo(): Response
+    {
+        $archivo = $this->getParameter('kernel.project_dir') . '/public/archivo.pdf';
+
+        return $this->file($archivo, 'archivo.pdf', ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }
