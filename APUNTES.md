@@ -176,8 +176,8 @@ EJ: `$page = $request->query->get(string $parametro, mixed $default);``
 - El servicio que ofrece Symfony para tratar las sesiones es: `use Symfony\Component\HttpFoundation\Session\SessionInterface;`
 - Para hacer uso de la session solo es necesario llamarla desde la acción `accion(SessionInterface $session)`
 - Los métodos que existen para manejar las sesiones son:
-- - `$session->set(string $sessionName, string $sessionValue)`
-- - `$session->get(string $sessionName, ?string|array $default);`
+    `$session->set(string $sessionName, string $sessionValue)`
+    `$session->get(string $sessionName, ?string|array $default);`
 
 ## Headers
 - Al Igual que la Request y Response, headers tiene una clase especifica para gestionar los header: `ResponseHeaderBag`
@@ -237,31 +237,31 @@ condition="context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-
 ## Built-in commands
 - Para ejecutar un comando desde consola se debe usar el comando: php bin/console “comando”
 - Para ver la lista de comandos se usa el comando: php bin/console list
-- - Agregarndo --short al comando retornara la lista de comandos sin la descripción
+    Agregarndo --short al comando retornara la lista de comandos sin la descripción
 - Para ver la ayuda correspondiente al comando se debe agreegar la opción  –help
-- - `$ php bin/console assets:install --help`
+    `$ php bin/console assets:install --help`
 - Los comandos se ejecutan por defecto en el entorno definido en el archivo .env en la opción variable APP_ENV. Pero se puede determinar el entorno al momento de ejecutar el comando:
-- - `$ APP_ENV=prod php bin/console cache:clear`
+    `$ APP_ENV=prod php bin/console cache:clear`
 - TIP (Symfony 6): Se puede agregar un autocompletar usando TAB agregando la la extensión para symfony en el sistema: `php bin/console completion bash | sudo tee /etc/bash_completion.d/console-events-terminate`
 
 ## Custom commands
 Los comandos se definen en clases que amplian la clase Command
 
 - Crear una clase que extienda Command
-- - Con namespace App\Command;
-- - Agregar un nombre al comando: `protected static $defaultName = 'app:create-user';`
-- - Crear una función execute que retorna el ID de respuesta: `protected function execute(InputInterface $input, OutputInterface $output): int`
-- - - `Command::SUCCESS;` // Si el comando se ejecuto sin problemas => 1
-- - -  `Command::FAILURE;` // Si ocurrió un error => 1
-- - - `Command::INVALID;` // Si el comando se ejecutó erroneamente => 2
+    Con namespace App\Command;
+    Agregar un nombre al comando: `protected static $defaultName = 'app:create-user';`
+    Crear una función execute que retorna el ID de respuesta: `protected function execute(InputInterface $input, OutputInterface $output): int`
+    - `Command::SUCCESS;` // Si el comando se ejecuto sin problemas => 1
+    -  `Command::FAILURE;` // Si ocurrió un error => 1
+    - `Command::INVALID;` // Si el comando se ejecutó erroneamente => 2
 
-- - Agregar una descripción al comando: `protected static $defaultDescription = 'Creates a new user.';`
-- - - TIP: “Definir la `$defaultDescriptionpropiedad` estática en lugar de usar el `setDescription()` método permite obtener la descripción del comando sin instanciar su clase. Esto hace que el `php bin/console list` comando se ejecute mucho más rápido.”
+    Agregar una descripción al comando: `protected static $defaultDescription = 'Creates a new user.';`
+    - TIP: “Definir la `$defaultDescriptionpropiedad` estática en lugar de usar el `setDescription()` método permite obtener la descripción del comando sin instanciar su clase. Esto hace que el `php bin/console list` comando se ejecute mucho más rápido.”
 
-- - Agregar la descripción de ayuda al comando `“ –help”`, en la función: `protected function configure(): void`
-- - - `$this->setHelp('This command allows you to create a user...')`
+    Agregar la descripción de ayuda al comando `“ –help”`, en la función: `protected function configure(): void`
+    - `$this->setHelp('This command allows you to create a user...')`
 
-- - A partir de PHP 8 se puede definir el comando haciendo uso de los comentarios
+    A partir de PHP 8 se puede definir el comando haciendo uso de los comentarios
 >`#[AsCommand(`
 >`    name: 'app:create-user',`
 >`    description: 'Creates a new user.',`
@@ -269,64 +269,64 @@ Los comandos se definen en clases que amplian la clase Command
 >`    aliases: ['app:add-user']`
 >`)]`
 
-- - Si no se pueden usar los atributos de PHP se deberá registrar el servicio y etiquetarlo con console.command: `config/services.yaml`
+    Si no se pueden usar los atributos de PHP se deberá registrar el servicio y etiquetarlo con console.command: `config/services.yaml`
 >`services:`
 >`    App\Twig\AppExtension:`
 >`        tags: ['twig.extension']`
 
-- - Salida de consola: con la variable  OutputInterface $output 
-- - - Se puede imprimir mensajes con salto de linea: `$output->writeln('Whoa!')`
-- - - Se pueden imprimir mensajes sin salto de linea: `$output->write('create a user.');`
-- - - Se puede imprimir mensajes durante la ejecución del comando haciendo uso de `$output->section()`. Eso creará una nueva sección para cada mensaje con: `$section1->writeln('Hello');` Y permitira sobreescribirlas con `$section1->overwrite('Goodbye')` así se podrán mostrar mensajes de avance  sobre la ejecución. Finalmente se puede limpiar toda la sección con el método: `$section2->clear();`
+    Salida de consola: con la variable  OutputInterface $output 
+    - Se puede imprimir mensajes con salto de linea: `$output->writeln('Whoa!')`
+    - Se pueden imprimir mensajes sin salto de linea: `$output->write('create a user.');`
+    - Se puede imprimir mensajes durante la ejecución del comando haciendo uso de `$output->section()`. Eso creará una nueva sección para cada mensaje con: `$section1->writeln('Hello');` Y permitira sobreescribirlas con `$section1->overwrite('Goodbye')` así se podrán mostrar mensajes de avance  sobre la ejecución. Finalmente se puede limpiar toda la sección con el método: `$section2->clear();`
 
 
-- - Entrada de consola: 
-- - - Para especificar los argumentos de entrada se deben usar el siguiente método en al función configure: `$this->addArgument('username', InputArgument::REQUIRED, 'The username of the user.')` O se puede especificar en los nested attributes (atributos anidados) si se usa PHP 8
-- - - Para obtener las argumentos se usa `$input->getArgument('username')`
+    Entrada de consola: 
+    - Para especificar los argumentos de entrada se deben usar el siguiente método en al función configure: `$this->addArgument('username', InputArgument::REQUIRED, 'The username of the user.')` O se puede especificar en los nested attributes (atributos anidados) si se usa PHP 8
+    - Para obtener las argumentos se usa `$input->getArgument('username')`
 
-- - Se puede usar inyección de dependencias en el controlador como en cualquier servicio dado que los comandos se encuentran registrados como servicios. **NOTA: no olvidar llamar el cosntructor padre al final del controlador para obtener las variables establecidas: `parent::__construct();`**
+    Se puede usar inyección de dependencias en el controlador como en cualquier servicio dado que los comandos se encuentran registrados como servicios. **NOTA: no olvidar llamar el cosntructor padre al final del controlador para obtener las variables establecidas: `parent::__construct();`**
 
 - Ciclo de vida de los comandos:
-- - `initialize()` OPCIONAL: Este método se ejecuta antes que interact()los execute()métodos y . Su objetivo principal es inicializar las variables utilizadas en el resto de los métodos de comando.
-- - `interact()` OPCIONAL: Se ejecuta despues de `initialize()` y antes de `execute()`
-- - - Su propósito es verificar si faltan algunas de las opciones/argumentos y preguntar de forma interactiva al usuario por esos valores. - - - Este es el último lugar donde puede solicitar opciones/argumentos faltantes. Después de este comando, las opciones/argumentos faltantes darán como resultado un error.
-- - `execute()`
-- - - Este metodo se encarga de ejecutar el comando en sí.
+    `initialize()` OPCIONAL: Este método se ejecuta antes que interact()los execute()métodos y . Su objetivo principal es inicializar las variables utilizadas en el resto de los métodos de comando.
+    `interact()` OPCIONAL: Se ejecuta despues de `initialize()` y antes de `execute()`
+    - Su propósito es verificar si faltan algunas de las opciones/argumentos y preguntar de forma interactiva al usuario por esos valores.     - Este es el último lugar donde puede solicitar opciones/argumentos faltantes. Después de este comando, las opciones/argumentos faltantes darán como resultado un error.
+    `execute()`
+    - Este metodo se encarga de ejecutar el comando en sí.
 
 #### Estilos de comandos
 `clase SymfonyStyle $io = new SymfonyStyle($input, $output);`
-- - Declarar un titulo `$io->title('Lorem Ipsum Dolor Sit Amet');`
-- - Declarar una sección: `$io->section('Adding a User');`
+    Declarar un titulo `$io->title('Lorem Ipsum Dolor Sit Amet');`
+    Declarar una sección: `$io->section('Adding a User');`
 
-- - Métodos de contenido
-- - - `$io->text(array|string $texto)`: mostrar cadenas de texto 
-- - - `$io->listing(array $lista)`: Muestra una lissta en base a una matriz
-- - - `$io->table(array $headerTable, array $table)`: Muestra una tabla
-- - - `$io->horizontalTable(array $headerTable, array $table)`: Muestra una tabla horizontal
-- - - `$io->definitionList(mixed $title, mexed $table)`: Muestra los key => valuepares dados como una lista compacta de elementos:
-- - - `$io->newLine(?int $lineNumber);` crea una nueva linea
+    Métodos de contenido
+    - `$io->text(array|string $texto)`: mostrar cadenas de texto 
+    - `$io->listing(array $lista)`: Muestra una lissta en base a una matriz
+    - `$io->table(array $headerTable, array $table)`: Muestra una tabla
+    - `$io->horizontalTable(array $headerTable, array $table)`: Muestra una tabla horizontal
+    - `$io->definitionList(mixed $title, mexed $table)`: Muestra los key => valuepares dados como una lista compacta de elementos:
+    - `$io->newLine(?int $lineNumber);` crea una nueva linea
 
-- - Métodos de amonestación
-- - - `$io->note(string|array $messages)`: Muestra una advertencia
-- - - `$io->caution(string|array $messages)`: Muestra un mensaje de error
+    Métodos de amonestación
+    - `$io->note(string|array $messages)`: Muestra una advertencia
+    - `$io->caution(string|array $messages)`: Muestra un mensaje de error
 
-- - Métodos de barra de progreso
-- - - `$io->progressStart();` Muestra una barra de progreso
-- - - `$io->progressStart(100);` Muestra una barra de progreso con 100 pasos 
-- - - `$io->progressAdvance(?int = 1);` Hace avanzar la barra de progreso n pasos
-- - - `$io->progressFinish();` Finaliza la barra de progreso
-- - - `$io->progressIterate(array $iterable)` El helper progressIterable sirve para avanzar la barra de progreso en base a una variable iterable, en foreach SYMFONY 6.1
-- - - `$io->createProgressBar();` Crea una instancia de ProgressBar de acuerdo a la guía de estilos de symfony
+    Métodos de barra de progreso
+    - `$io->progressStart();` Muestra una barra de progreso
+    - `$io->progressStart(100);` Muestra una barra de progreso con 100 pasos 
+    - `$io->progressAdvance(?int = 1);` Hace avanzar la barra de progreso n pasos
+    - `$io->progressFinish();` Finaliza la barra de progreso
+    - `$io->progressIterate(array $iterable)` El helper progressIterable sirve para avanzar la barra de progreso en base a una variable iterable, en foreach SYMFONY 6.1
+    - `$io->createProgressBar();` Crea una instancia de ProgressBar de acuerdo a la guía de estilos de symfony
 
-- - Métodos de entrada del usuario
-- - - `$io->ask(string $pregunta, any $default, function $validator)` Preguntar por un valor
+    Métodos de entrada del usuario
+    - `$io->ask(string $pregunta, any $default, function $validator)` Preguntar por un valor
 Si al validar el parametro no es correcto, ejectue un error con la clase: throw new \RuntimeException(
-- - - `$io->askHidden(string $pregunta, any $default, function $validator)` preguntar por un valor sin mostrar el ingreso del usuario
-- - - `$io->confirm(string $pregunta, mixed $default)` Preguntar para obtener una respuesta del usuario, el segundo campo que se pasa es el valor predeterminado
-- - - `$io->choice(string $pregunta, array $opciones, mixed $respuestaDefault)` Hace una pregunta cuya respuesta está restringida a la lista dada de respuestas válidas
+    - `$io->askHidden(string $pregunta, any $default, function $validator)` preguntar por un valor sin mostrar el ingreso del usuario
+    - `$io->confirm(string $pregunta, mixed $default)` Preguntar para obtener una respuesta del usuario, el segundo campo que se pasa es el valor predeterminado
+    - `$io->choice(string $pregunta, array $opciones, mixed $respuestaDefault)` Hace una pregunta cuya respuesta está restringida a la lista dada de respuestas válidas
 
-- - Métodos de resultados
-- - - `$io->success(string|array $mensaje(s))` Muestra la cadena dada o la matriz de cadenas resaltada como un mensaje exitoso (con un fondo verde y la [OK]etiqueta)
-- - - `$io->info(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, sin mostrar el resultado como exitoso o fallido:
-- - - `$io->warning(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
-- - - `$io->error(string|array $mensaje(s))` . Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
+    Métodos de resultados
+    - `$io->success(string|array $mensaje(s))` Muestra la cadena dada o la matriz de cadenas resaltada como un mensaje exitoso (con un fondo verde y la [OK]etiqueta)
+    - `$io->info(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, sin mostrar el resultado como exitoso o fallido:
+    - `$io->warning(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
+    - `$io->error(string|array $mensaje(s))` . Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
