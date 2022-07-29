@@ -330,3 +330,216 @@ Si al validar el parametro no es correcto, ejectue un error con la clase: throw 
     - `$io->info(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, sin mostrar el resultado como exitoso o fallido:
     - `$io->warning(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
     - `$io->error(string|array $mensaje(s))` . Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
+
+# Templates / Twig
+Es un motor de plantillas flexible, rápido y seguro
+
+## Lenguaje de plantillas Twig
+La  sintaxis de Twig se basa en tres construcciones:
+- `{{ .. }}` Utilizado para mostrar el contenido de una variable o el resultado de evaluar una expresión
+- `{% ... %}` Utilizado para ejecutar alguna lógica, como un condicional o bluccle
+- `{# ... #}` Utilizado para agregar comentarios a la plantilla ( estos comentarios no se incluten en la página representada)
+
+Twig prporciona algo de lógica en sus plantillas, ej: filtros `{{ titulo|upper }}` convertir la variable titulo en mayúscula. Además cienta con: etiqueta, filtro, funciones, funciones definidas por symfony y se puede crear filtrosy funciones propios.
+
+- En el entoro `prod`: Twig es rápido  porque las plantillas se compilan en PHP y se almacenan en caché automáticamente
+- En el entorno `dev`:  Las plantillas se vuelven a compilar automáticamente cuando se modifican
+
+#### Para ver la configuración de twig
+https://symfony.com/doc/4.4/reference/configuration/twig.html
+
+## Creación de plantillas 
+
+#### Denominación de plantillas
+- Utilizar snake_case para los nombres de archivos y directorios. Ej: `admin/default_theme/blog/blog_post.html.twig`
+- Definir dos extensiones para los archivos, siendo la primer extensión, la extensión de la plantilla (`html`, `xml`, etc...) y `twig` para el final
+
+Las plantillas pueden generar cualquier formato basado en textos
+
+#### Ubicación de la plantilla
+Las plantillas se almacenan de forma predeterminada en el directorio `templates/`. Cuando se representa la plantilla `product/index.html.twig` en realidad se está refiriendo al archivo `<projecto>/templates/product/index.html.twig`.
+
+El directorio predeterminado de las plantillas se puede cambiar en `twig.default_path`.
+
+#### Variables de plantilla
+Ejemplo del orden en que Twig busca el atributo d eun objeto:
+1. $foo['bar'](matriz y elemento);
+2. $foo->bar(objeto y propiedad pública);
+3. $foo->bar()(objeto y método público);
+4. $foo->getBar()(objeto y método getter );
+5. $foo->isBar()(método objeto y emisor );
+6. $foo->hasBar()(objeto y método hasser );
+7. Si no existe ninguno de los anteriores, use null(o lance una Twig\Error\RuntimeErrorexcepción si la opción strict_variables está habilitada).
+
+#### Links a páginas
+- Para generar una dirección URL relativa a una acción determinada se debe usar `path('nombre_accion')``
+
+  - Ejemplo: `<a href="{{ path('blog_index') }}">Homepage</a> ``
+
+- Para generar una dirección URL absolugar se debe usar `url('nombre_accion')``
+
+  - Ejemplo: `<a href="{{ url('blog_index') }}">Homepage</a> ``
+
+## Vincular a CSS, JavaScript y activos de imagen
+Si una plantilla necesita vincularse a un activo estatico, por ejemplo una imagen, css o javascript. Symfony proporciona la función 'asset()'. Instalando el paquete `composer require symfony/asset`
+
+Ejemplo:
+`<link href="{{ asset('css/blog.css') }}" rel="stylesheet"/>`
+
+- Para rutas absulutas de assets usar `absolute_asset('pag/ass.ext')`
+
+## La variable global de la aplicación
+
+> Symfony crea un objeto de contexto que se inyecta en cada plantilla de Twig automáticamente como una variable llamada `app`. Proporciona acceso a cierta información de la aplicación
+
+- `app.user` El objetio del usuario actual o null si no está autenticado
+- `app.request` El objeto Requet
+- `app.session` El objeto Session
+- `app.flashes` Una matriz con los mensajes flash
+- `app.enviroment` El nombre del entorno actual (`dev`, `prod`, etc)
+- `app.debug` True si está en modo depuración
+- `app.token` Un objeto TokenInterface que representa el token de seguridad.
+
+- También se pueden inyectar variables en todas las plantillas, ver:
+https://symfony.com/doc/4.4/templating/global_variables.html
+
+## Componentes Twig
+
+Los componentes Twig son una forma alternativa de representar plantillas, donde cada plantilla está vinculada a una "clase de componente". Esto hace que sea más fácil representar y reutilizar pequeñas "unidades" de plantilla, como una alerta, marcado para un modal o una barra lateral de categoría.
+https://symfony.com/bundles/ux-twig-component/current/index.html
+
+Los componentes de Twig también tienen otro superpoder: pueden volverse "en vivo", donde se actualizan automáticamente (a través de Ajax) a medida que el usuario interactúa con ellos. Por ejemplo, cuando su usuario escribe en un cuadro, su componente Twig se volverá a procesar a través de Ajax para mostrar una lista de resultados.
+https://symfony.com/bundles/ux-live-component/current/index.html
+
+Para renderizar un componente de plantilla Twig, en el controlador que extiende de `AbstractController` se debe usar `$this->renderView`. Ej:
+
+> `$contents = $this->renderView('product/index.html.twig', [`
+> `'category' => '...',`
+> `'promotions' => ['...', '...'],`
+> `]);`
+>
+> `return new Response($contents);`
+
+Esto renderizará únicamente la porción correspondiente al componente.
+
+## Representación de una plantilla en servicios
+
+Inyectando la clas `use Twig\Environment` se puede hacer uso de twig en un Servicio.
+
+## Representación de una plantilla en correo electronicos
+
+https://symfony.com/doc/4.4/mailer.html#mailer-twig
+
+## Comprobar si existe una plantilla
+
+Para comprobar si existe una plantilla Twig debemos usar un Loader de plantillas, este se puede obtener obtener inyectando la clas "Twig\Enviroment" y  llamando al método `->getLoader()`. Luego con el loader usar el método `->exists('theme/plantilla.html.twig')``
+
+## Depuración de Plantillas
+Symfony proporciona varias utilidades para ayudarte a depurar problemas en las plantillas.
+
+El comando `lint:twig` verifica que las platillas de Twig no tengan errores de sintaxis. Es útil implementarlo en servidores de integración continua.
+
+- Revisar todos los templates de la aplicación
+
+> $ php bin/console lint:twig
+
+- Revisar templates individuales
+
+> $ php bin/console lint:twig templates/email/
+> $ php bin/console lint:twig templates/article/recent_list.html.twig
+
+- Ver las caracteristicas deprecadas en los templates
+
+> $ php bin/console lint:twig --show-deprecations templates/email/
+
+El comando `debug:twig`enumera toda la información disponible sobre Twig(funciones, filtros, variables globales, etc.). Verifica las funciones personailizadas y nuevas de Twig al agregar paquetes:
+
+- Información general
+
+> $ php bin/console debug:twig
+
+- Filtrar alguna palabra clave
+php bin/console debug:twig --filter=date
+
+- Pasar el path del archivo a debugear
+php bin/console debug:twig @Twig/Exception/error.html.twig
+
+## Las utiidades de Dump Twig
+Symfony proporciona una función dump(), pero es necesario primero instalar el paquete: `composer require symfony/var-dumper`
+
+Luego se puede usar `{% dump %} o {{ dump() }} según el requemrimiento
+
+Por razones de seguridad dump solo funciona en entornos de desarrollo, en `prod` o `test` se verá un error.
+
+## Incluir plantillas
+
+Se pueden incluir plantillas dentro de otras plantillas haciendo uso de `include()`. Ej:
+
+- `{{ include('blog/_user_profile.html.twig') }}`
+- `{{ include('blog/_user_profile.html.twig', {user: blog_post.author}) }`
+
+Una mejor alternativa es incrustar el resultado de ejecutar algún controlador con las funciones `render()` y `controller()` Twig.
+
+EJ:
+- ` {{ render(url('latest_articles', {max: 3})) }}`
+- `render(controller( 'App\\Controller\\BlogController::recentArticles', {max: 3} ))`
+
+**La incrustación de controladores requiere realizar solicitudes a esos controladores y generar algunas plantillas como resultado.**
+
+Las plantillas también pueden incrustar contenido de forma asincronica con la libreria hinclude.js, ver:
+https://symfony.com/doc/4.4/templating/hinclude.html
+
+## Herencia de plantillas y diseños
+> El concepto de herencia de plantillas Twig es similar a la herencia de clases de PHP. Usted define una plantilla principal a partir de la cual pueden extenderse otras plantillas y las plantillas secundarias pueden anular partes de la plantilla principal.
+
+Symfony recomienda la siguiente herencia de plantillas de tres niveles para aplicaciones medianas y complejas:
+
+1. `templates/base.html.twig`, define los elementos comunes de todas las plantillas de aplicación, como `<head>`, `<header>`, `<footer>`, etc.
+2. `templates/layout.html.twig`, se extiende desde `base.html.twig` y define la estructura de contenido utilizada en todas o la mayoría de las páginas, como un contenido de dos columnas + diseño de barra lateral. Algunas secciones de la aplicación pueden definir sus propios diseños (p. ej `templates/blog/layout.html.twig`);
+3. `templates/*.html.twig`, las páginas de la aplicación que se extienden desde la `layout.html.twig` plantilla principal o cualquier otro diseño de sección
+
+Ejemplo:
+
+- *templates/base.html.twig*
+  - `<html><body>{% block content %}{% endblock %}  </body> </html>`
+
+- *templates/blog/layout.html.twig*
+  - `{% extends 'base.html.twig' %} {% block content %} <h1>Blog</h1> {% block page_contents %}{% endblock %} {% endblock %}`
+
+- *templates/blog/index.html.twig*
+- `{% extends 'blog/layout.html.twig' %} {% block title %}Blog Index{% endblock %} {% block page_contents %} {% for article in articles %} <h2>{{ article.title }}</h2> <p>{{ article.body }}</p> {% endfor %} {% endblock %}`
+
+La etiqueta `{% block %}` determina un espacio de bloque en la plantilla.
+
+- ***Cuando se usa extends, una plantilla secundaria tiene prohibido definir partes de la plantilla fuera de un bloque. El siguiente código arroja un SyntaxError***
+
+## Escape de salida
+
+Para mostrar una variable sin pasar por los filtros de seguridad de XSS de Twig, use el filtro `raw`. Ej: {{ product.title|raw }}
+
+## Espacios de nombre en plantillas
+
+Para configurar espacios de nombre para plantillas almacenadas en directorios distintos a `templates/`. Se debe configurar `paths` en `config/packages/twig.yaml`
+
+`# config/packages/twig.yaml`
+
+`twig:`
+
+`# ...`
+
+`paths:`
+
+`'email/default/templates': 'email'`
+
+`'backend/templates': 'admin'`
+
+Despues se pueden renderizar de esta forma: `@email/layout.html.twigy` `@admin/layout.html.twig`
+
+## Paquete de plantillas
+
+Si instala `paquetes/bundles` en su aplicación, pueden incluir sus propias plantillas Twig (en el `Resources/views/directorio` de cada paquete). Para evitar jugar con tus propias plantillas, Symfony agrega plantillas de paquetes en un espacio de nombres automático creado después del nombre del paquete.
+
+Por ejemplo, las plantillas de un paquete llamado AcmeFooBundleestán disponibles en el espacio de AcmeFoonombres. Si este paquete incluye la plantilla `<your-project>/vendor/acmefoo-bundle/Resources/views/user/profile.html.twig`, puede referirse a ella como `@AcmeFoo/user/profile.html.twig`
+
+También se pueden sobre escribir plantillas de otos paquetes:
+https://symfony.com/doc/4.4/bundles/override.html
