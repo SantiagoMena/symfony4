@@ -1,8 +1,68 @@
 # Apuntes Symfony 4
+#### GETTING STARTED
+- [x] Setup / Installation
+- [x] Creating Pages
+- [x] Routing / Generating URLs
+- [x] Controllers
+- [ ] Templates / Twig
+- [ ] Configuration / Env Vars
+#### ARCHITECTURE
+- [ ] Requests / Responses
+- [ ] Kernel
+- [ ] Services / DI
+- [ ] Events
+- [ ] Contracts
+- [ ] Bundles
+#### THE BASICS
+- [ ] Databases / Doctrine
+- [ ] Forms
+- [ ] Tests
+- [ ] Sessions
+- [ ] Cache
+- [ ] Logger
+- [ ] Errors / Debugging
+#### ADVANCED TOPICS
+- [ ] Console
+- [ ] Mailer / Emails
+- [ ] Validation
+- [ ] Messaging / Queues
+- [ ] Notifications
+- [ ] Serialization
+- [ ] Translation / i18n
+#### SECURITY
+- [ ] Introduction
+- [ ] Users
+- [ ] Authentication / Firewalls
+- [ ] Authorization / Voters
+- [ ] Passwords
+- [ ] CSRF
+- [ ] LDAP
+#### FRONT-END
+- [ ] Symfony UX / Stimulus
+- [ ] Webpack Encore
+- [ ] React.js
+- [ ] Vue.js
+- [ ] Bootstrap
+- [ ] Web Assets
+- [ ] WebLink
+#### UTILITIES
+- [ ] HTTP Client
+- [ ] Files / Filesystem
+- [ ] Expression Language
+- [ ] Locks
+- [ ] Workflows
+- [ ] Strings / Unicode
+- [ ] UID / UUID
+- [ ] YAML Parser
+#### PRODUCTION
+- [ ] Deployment
+- [ ] Performance
+- [ ] HTTP Cache
+- [ ] Cloud / Platform.sh
 
-## Symfony Architecture
+# Setup / Installation
 
-#### Symfony Flex
+## Symfony Flex
 Se usa symfony flex para instalar y configurar paquetes automáticamente. 
 Es un complemento de composer.
 Permite instalar recipes que son recetas de paquetes preconfigurados que se implementan en symfony
@@ -44,42 +104,42 @@ https://symfony.com/bundles/DoctrineFixturesBundle/current/index.html
 
 Componenete para crear datos de prueba para cargar la base de datos.
 
-## Controllers
+# Controllers
 Suele ser un método dentro de una clase Controller
 
-#### Naming conventions
+## Naming conventions
 - `namespace App\Controller;`
 - `class ControlladorController {}`
 
-#### The base Controller class
+## The base Controller class
 Symfony cuenta con una base controller opcional llamada AbstractController
 https://github.com/symfony/symfony/blob/4.4/src/Symfony/Bundle/FrameworkBundle/Controller/AbstractController.php
 
-#### Internal redirects
+## Internal redirects
 Generar la URL de una ruta determinada
 `$this->generateUrl(string $nameRoute, ?array $params)`
 
-#### HTTP redirects
+## HTTP redirects
 - $this->redirectToRoute(string $nameRoute, ?array $params, int $responseCode) 
 - Es igual a: return new RedirectResponse($this->generateUrl('homepage'));
 - Los códigos de respuesta están como constantes en la clase Response: Response::HTTP_MOVED_PERMANENTLY
 - `$this->redirect(‘http://url.externa.com’)` Redirección externa
 
-#### Renderizado de plantillas
+## Renderizado de plantillas
 Para renderizar una plantilla se debe retornar el método:
 `return $this->render(string $direccionPlantilla , array $params);`
 
-#### Autowiring de Servicios
+## Autowiring de Servicios
 - Para usar clases de servicios Symfony se pueden solicitar en cada una de las acciones del controlador, entonces symfony las pasará automáticamente.
 - Para conocer la lista de servicios disponibles para autowiring, se puede usar el comando en consola: php bin/console debug:autowiring
 - También se puede inyectar las clases por nombre desde el archivo config/services.yml
 - También se pueden inyectar los servicios en el controlador
 
-#### Symfony Maker
+## Symfony Maker
 - Crear un nuevo controlador: `$php bin/console make:controller BrandNewController`
 - Crear un nuevo CRUD: `$php bin/console make:crud Product`
 
-#### Generate 404 pages
+## Generate 404 pages
 Se puede retornar el método createNotFoundException(string $mensaje); 
 Es un atajo para la creación del objeto de tipo NotFoundHttpException
 Ej:
@@ -91,15 +151,15 @@ Es lo mismo que:
 Esto finalmente desencadena en la la respuesta HTTP 404 de Symfony
 Si se lanza una exepción que extiende de `HttpException`, symfony usará el códgio de estado HTTP apropiado, de lo contrario siempre retornará HTTP 500
 
-#### Obtener los parametros $_GET
+## Obtener los parametros $_GET
 Se usa la clase Request, y se accede al atributo “query” y con el método ->get() de este se obtiene el parametro:
 EJ: `$page = $request->query->get(string $parametro, mixed $default);``
 
-#### The response
+## The response
 - Se puede retornar una respuesta json usando: `return $this->json(array $response);`
 - Se puede retornar un archivo usando: `return $this->file(string $pathToFile, ?string $nombreArchivo, ?int ResponseHeaderBag::DISPOSITION_INLINE);`
 
-#### The Request
+## The Request
 - `$request->isXmlHttpRequest();` // Es una request Ajax?
 - `$request->getPreferredLanguage(['en', 'fr']);` // Obtener el lenguaje preferido
 - `$request->query->get('page');` // Obtener parametros de la consulta GET
@@ -109,32 +169,32 @@ EJ: `$page = $request->query->get(string $parametro, mixed $default);``
 - `$request->cookies->get('PHPSESSID');` // Obtener una cookie en especifico 
 - `$request->headers->get('host');` // Obtener los headers (normalizados con lowercase)
 
-#### The cookies
+## The cookies
 - `$request->cookies->get('PHPSESSID');`
 
-#### The session
+## The session
 - El servicio que ofrece Symfony para tratar las sesiones es: `use Symfony\Component\HttpFoundation\Session\SessionInterface;`
 - Para hacer uso de la session solo es necesario llamarla desde la acción `accion(SessionInterface $session)`
 - Los métodos que existen para manejar las sesiones son:
 - - `$session->set(string $sessionName, string $sessionValue)`
 - - `$session->get(string $sessionName, ?string|array $default);`
 
-#### Headers
+## Headers
 - Al Igual que la Request y Response, headers tiene una clase especifica para gestionar los header: `ResponseHeaderBag`
 https://github.com/symfony/symfony/blob/4.4/src/Symfony/Component/HttpFoundation/ResponseHeaderBag.php
 - En la respuesta: `$response->headers->set('Content-Type', 'text/css');`
 
-#### The flash messages
+## The flash messages
 - Los mensajes flash están destinados a usarse exactamente una vez
 - Para generar un mensaje flash use: `$this->addFlash(string $categoria, string $mensaje)`
 - Para obtener un mensaje se usa `app.flashes(string $categoria)` en la vista
 
-#### File upload
+## File upload
 https://symfony-com.translate.goog/doc/4.4/controller/upload_file.html
 `$request->files->get('foo');`
 
-## Routing
-#### Configuration (annotations)
+# Routing
+## Configuration (annotations)
 - Annotations /* @Route()
 
 Se pueden generar rutas en Symfony usando anotaciones usando la clase: Symfony\Component\Routing\Annotation\Route
@@ -147,7 +207,7 @@ Se pueden generar rutas en Symfony usando anotaciones usando la clase: Symfony\C
 - `/* paramConverter {entity_id}` https://symfony-com.translate.goog/bundles/SensioFrameworkExtraBundle/current/annotations/converters.html?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=wapp
 - `/* {_locale} {_format}`
 
-#### Restrict URL parameters
+## Restrict URL parameters
 Se usan las anotaciones: requirements
 >`*   requirements={ `
 >`*     "_locale": "en|fr|es", `
@@ -156,25 +216,25 @@ Se usan las anotaciones: requirements
 >`*   } `
 >`* )`
 
-#### Set default values to URL parameters
+## Set default values to URL parameters
 - Se puede asignar en comentarios o en la función.
 `{slug<\C+>?defaultAnnotation}`
 
-#### Special internal routing attributes
+## Special internal routing attributes
 `/ {_locale} {_format}`
 
-#### Domain name matching
+## Domain name matching
 condition="request.headers.get('User-Agent') matches '/chrome/i'" 
 
-#### Conditional request matching
+## Conditional request matching
 Se puede usar en la condición los objetos context, request y ENV_VARS % % [OR AND]
 condition="context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-Agent') matches '/chrome/i'" 
 
-#### HTTP methods matching
+## HTTP methods matching
 `/* condition="context.getMethod() in ['GET', 'HEAD']" `
 
-## Console
-#### Built-in commands
+# Console
+## Built-in commands
 - Para ejecutar un comando desde consola se debe usar el comando: php bin/console “comando”
 - Para ver la lista de comandos se usa el comando: php bin/console list
 - - Agregarndo --short al comando retornara la lista de comandos sin la descripción
@@ -233,7 +293,8 @@ Los comandos se definen en clases que amplian la clase Command
 - - `execute()`
 - - - Este metodo se encarga de ejecutar el comando en sí.
 
-- Estilos de comandos `clase SymfonyStyle $io = new SymfonyStyle($input, $output);`
+#### Estilos de comandos
+`clase SymfonyStyle $io = new SymfonyStyle($input, $output);`
 - - Declarar un titulo `$io->title('Lorem Ipsum Dolor Sit Amet');`
 - - Declarar una sección: `$io->section('Adding a User');`
 
