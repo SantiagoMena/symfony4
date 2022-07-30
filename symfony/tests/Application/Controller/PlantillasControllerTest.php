@@ -34,4 +34,16 @@ class PlantillasControllerTest extends WebTestCase
         $this->assertSame('/plantillas/links', $crawler->filter('#url_relativa')->attr('href'));
         $this->assertSame('http://localhost/plantillas/links', $crawler->filter('#url_absoluta')->attr('href'));
     }
+
+    public function testAssets(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/plantillas/assets');
+        
+        $this->assertResponseIsSuccessful();
+        $this->assertSame(
+            '/assets/plantillas/asset_twig.png',
+            $crawler->filter('#asset')->attr('src')
+        );
+    }
 }

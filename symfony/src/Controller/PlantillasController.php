@@ -46,4 +46,12 @@ class PlantillasController extends AbstractController
     {
         return $this->render('plantillas/links.html.twig');
     }
+
+    /**
+     * @Route("/assets", name="assets")
+     */
+    public function assets(): Response
+    {
+        return $this->render('plantillas/assets.html.twig');
+    }
 }
