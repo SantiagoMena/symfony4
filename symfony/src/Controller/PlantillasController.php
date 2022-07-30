@@ -38,4 +38,12 @@ class PlantillasController extends AbstractController
             'parametro' => $parametro
         ]);
     }
+
+    /**
+     * @Route("/links", name="links")
+     */
+    public function links(): Response
+    {
+        return $this->render('plantillas/links.html.twig');
+    }
 }

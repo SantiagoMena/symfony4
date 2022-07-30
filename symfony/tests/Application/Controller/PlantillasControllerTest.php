@@ -25,5 +25,13 @@ class PlantillasControllerTest extends WebTestCase
         $this->assertSelectorTextSame('h2', 'array.parametro');
     }
 
-    
+    public function testLinks(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/plantillas/links');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('/plantillas/links', $crawler->filter('#url_relativa')->attr('href'));
+        $this->assertSame('http://localhost/plantillas/links', $crawler->filter('#url_absoluta')->attr('href'));
+    }
 }

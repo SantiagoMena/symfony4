@@ -437,11 +437,11 @@ Ejemplo del orden en que Twig busca el atributo d eun objeto:
 
 #### Links a páginas
 
-- Para generar una dirección URL relativa a una acción determinada se debe usar `path('nombre_accion')``
+- Para generar una dirección URL relativa a una acción determinada se debe usar `path('nombre_accion')`
 
   - Ejemplo: `<a href="{{ path('blog_index') }}">Homepage</a>`
 
-- Para generar una dirección URL absolugar se debe usar `url('nombre_accion')`
+- Para generar una dirección URL absoluta se debe usar `url('nombre_accion')`
 
   - Ejemplo: `<a href="{{ url('blog_index') }}">Homepage</a>`
 
