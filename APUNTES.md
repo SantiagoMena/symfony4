@@ -1,19 +1,25 @@
 # Apuntes Symfony 4
+
 #### GETTING STARTED
+
 - [x] Setup / Installation
 - [x] Creating Pages
 - [x] Routing / Generating URLs
 - [x] Controllers
 - [ ] Templates / Twig
 - [ ] Configuration / Env Vars
+
 #### ARCHITECTURE
+
 - [ ] Requests / Responses
 - [ ] Kernel
 - [ ] Services / DI
 - [ ] Events
 - [ ] Contracts
 - [ ] Bundles
+
 #### THE BASICS
+
 - [ ] Databases / Doctrine
 - [ ] Forms
 - [ ] Tests
@@ -21,7 +27,9 @@
 - [ ] Cache
 - [ ] Logger
 - [ ] Errors / Debugging
+
 #### ADVANCED TOPICS
+
 - [ ] Console
 - [ ] Mailer / Emails
 - [ ] Validation
@@ -29,7 +37,9 @@
 - [ ] Notifications
 - [ ] Serialization
 - [ ] Translation / i18n
+
 #### SECURITY
+
 - [ ] Introduction
 - [ ] Users
 - [ ] Authentication / Firewalls
@@ -37,7 +47,9 @@
 - [ ] Passwords
 - [ ] CSRF
 - [ ] LDAP
+
 #### FRONT-END
+
 - [ ] Symfony UX / Stimulus
 - [ ] Webpack Encore
 - [ ] React.js
@@ -45,7 +57,9 @@
 - [ ] Bootstrap
 - [ ] Web Assets
 - [ ] WebLink
+
 #### UTILITIES
+
 - [ ] HTTP Client
 - [ ] Files / Filesystem
 - [ ] Expression Language
@@ -54,38 +68,46 @@
 - [ ] Strings / Unicode
 - [ ] UID / UUID
 - [ ] YAML Parser
+
 #### PRODUCTION
+
 - [ ] Deployment
 - [ ] Performance
 - [ ] HTTP Cache
 - [ ] Cloud / Platform.sh
 
-# Setup / Installation
+## Setup / Installation
 
-## Symfony Flex
-Se usa symfony flex para instalar y configurar paquetes automáticamente. 
+### Symfony Flex
+
+Se usa symfony flex para instalar y configurar paquetes automáticamente.
 Es un complemento de composer.
 Permite instalar recipes que son recetas de paquetes preconfigurados que se implementan en symfony
 Las recipes son implementadas por algunos bundles de Symfony para instalar los paquetes necesarios
 Al instalar una receta de Flex está descomprime automáticamente el resto de paquetes en composer, por lo tanto se ven los paquetes y no la receta.
 
 Ej:
-- composer require logger => I 
+
+- composer require logger => I
 
 Si encuentra un error al instalar “ composer require logger “:
+
 1. composer remove symfony/symfony
 2. composer require symfony/flex
 
-## License
+### License
+
 La licencia de uso de symfony es de código libre, cualquier persona puede usar el software para reproducir, modificar o crear copias, mientras se encuentre agregada esta licencia.
 
-## Components
+### Components
 
 #### Assets
-https://symfony.com/doc/4.4/components/asset.html
+
+<https://symfony.com/doc/4.4/components/asset.html>
 Se encarga de la generación de urls y versionado de los assets del sitio web (CSS, JS & Archivos Multimedia).
 
 Permite:
+
 - Definir versiones de assets
 - Mover archivos solo cambiando la ruta asociada al asset
 - Usar CDNs y HTTP o HTTPS de manera automática
@@ -95,52 +117,63 @@ Permite:
 - Obtener activos por nombre de tipo de activo
 
 #### PHPUNIT
-https://symfony.com/doc/4.4/testing.html
+
+<https://symfony.com/doc/4.4/testing.html>
 
 Componente para pruebas en Symfony, implementa PHPUnit. Cada prueba es una clase que termina en “Test”, en la carpeta tests.
 
 #### Fixturres
-https://symfony.com/bundles/DoctrineFixturesBundle/current/index.html
+
+<https://symfony.com/bundles/DoctrineFixturesBundle/current/index.html>
 
 Componenete para crear datos de prueba para cargar la base de datos.
 
-# Controllers
+## Controllers
+
 Suele ser un método dentro de una clase Controller
 
-## Naming conventions
+### Naming conventions
+
 - `namespace App\Controller;`
 - `class ControlladorController {}`
 
-## The base Controller class
-Symfony cuenta con una base controller opcional llamada AbstractController
-https://github.com/symfony/symfony/blob/4.4/src/Symfony/Bundle/FrameworkBundle/Controller/AbstractController.php
+### The base Controller class
 
-## Internal redirects
+Symfony cuenta con una base controller opcional llamada AbstractController
+<https://github.com/symfony/symfony/blob/4.4/src/Symfony/Bundle/FrameworkBundle/Controller/AbstractController.php>
+
+### Internal redirects
+
 Generar la URL de una ruta determinada
 `$this->generateUrl(string $nameRoute, ?array $params)`
 
-## HTTP redirects
-- $this->redirectToRoute(string $nameRoute, ?array $params, int $responseCode) 
+### HTTP redirects
+
+- $this->redirectToRoute(string $nameRoute, ?array $params, int $responseCode)
 - Es igual a: return new RedirectResponse($this->generateUrl('homepage'));
 - Los códigos de respuesta están como constantes en la clase Response: Response::HTTP_MOVED_PERMANENTLY
 - `$this->redirect(‘http://url.externa.com’)` Redirección externa
 
-## Renderizado de plantillas
+### Renderizado de plantillas
+
 Para renderizar una plantilla se debe retornar el método:
 `return $this->render(string $direccionPlantilla , array $params);`
 
-## Autowiring de Servicios
+### Autowiring de Servicios
+
 - Para usar clases de servicios Symfony se pueden solicitar en cada una de las acciones del controlador, entonces symfony las pasará automáticamente.
 - Para conocer la lista de servicios disponibles para autowiring, se puede usar el comando en consola: php bin/console debug:autowiring
 - También se puede inyectar las clases por nombre desde el archivo config/services.yml
 - También se pueden inyectar los servicios en el controlador
 
-## Symfony Maker
+### Symfony Maker
+
 - Crear un nuevo controlador: `$php bin/console make:controller BrandNewController`
 - Crear un nuevo CRUD: `$php bin/console make:crud Product`
 
-## Generate 404 pages
-Se puede retornar el método createNotFoundException(string $mensaje); 
+###  Generate 404 pages
+
+Se puede retornar el método createNotFoundException(string $mensaje);
 Es un atajo para la creación del objeto de tipo NotFoundHttpException
 Ej:
 `throw $this->createNotFoundException('The product does not exist');`
@@ -151,90 +184,109 @@ Es lo mismo que:
 Esto finalmente desencadena en la la respuesta HTTP 404 de Symfony
 Si se lanza una exepción que extiende de `HttpException`, symfony usará el códgio de estado HTTP apropiado, de lo contrario siempre retornará HTTP 500
 
-## Obtener los parametros $_GET
+### Obtener los parametros $_GET
+
 Se usa la clase Request, y se accede al atributo “query” y con el método ->get() de este se obtiene el parametro:
 EJ: `$page = $request->query->get(string $parametro, mixed $default);``
 
-## The response
+### The response
+
 - Se puede retornar una respuesta json usando: `return $this->json(array $response);`
 - Se puede retornar un archivo usando: `return $this->file(string $pathToFile, ?string $nombreArchivo, ?int ResponseHeaderBag::DISPOSITION_INLINE);`
 
-## The Request
+### The Request
+
 - `$request->isXmlHttpRequest();` // Es una request Ajax?
 - `$request->getPreferredLanguage(['en', 'fr']);` // Obtener el lenguaje preferido
 - `$request->query->get('page');` // Obtener parametros de la consulta GET
 - `$request->request->get('page');` // Obtener parametros de la consulta POST
 - `$request->server->get('HTTP_HOST');` // Obtener las variables del servidor
 - `$request->files->get('foo');` // Obtener los archivos de un parametro
-- `$request->cookies->get('PHPSESSID');` // Obtener una cookie en especifico 
+- `$request->cookies->get('PHPSESSID');` // Obtener una cookie en especifico
 - `$request->headers->get('host');` // Obtener los headers (normalizados con lowercase)
 
-## The cookies
+### The cookies
+
 - `$request->cookies->get('PHPSESSID');`
 
-## The session
+### The session
+
 - El servicio que ofrece Symfony para tratar las sesiones es: `use Symfony\Component\HttpFoundation\Session\SessionInterface;`
 - Para hacer uso de la session solo es necesario llamarla desde la acción `accion(SessionInterface $session)`
 - Los métodos que existen para manejar las sesiones son:
   - `$session->set(string $sessionName, string $sessionValue)`
   - `$session->get(string $sessionName, ?string|array $default);`
 
-## Headers
+### Headers
+
 - Al Igual que la Request y Response, headers tiene una clase especifica para gestionar los header: `ResponseHeaderBag`
-https://github.com/symfony/symfony/blob/4.4/src/Symfony/Component/HttpFoundation/ResponseHeaderBag.php
+<https://github.com/symfony/symfony/blob/4.4/src/Symfony/Component/HttpFoundation/ResponseHeaderBag.php>
 - En la respuesta: `$response->headers->set('Content-Type', 'text/css');`
 
-## The flash messages
+### The flash messages
+
 - Los mensajes flash están destinados a usarse exactamente una vez
 - Para generar un mensaje flash use: `$this->addFlash(string $categoria, string $mensaje)`
 - Para obtener un mensaje se usa `app.flashes(string $categoria)` en la vista
 
-## File upload
-https://symfony-com.translate.goog/doc/4.4/controller/upload_file.html
+### File upload
+
+<https://symfony-com.translate.goog/doc/4.4/controller/upload_file.html>
 `$request->files->get('foo');`
 
-# Routing
-## Configuration (annotations)
+## Routing
+
+### Configuration (annotations)
+
 - Annotations /* @Route()
 
 Se pueden generar rutas en Symfony usando anotaciones usando la clase: Symfony\Component\Routing\Annotation\Route
+
 - `/* {variables}`
 - `/* {variablesUNICODE<\p{L}\d+>} utf8=true`
 - `/* condition=" context.getMethod() in ['GET', 'HEAD'] and and request.headers.get('User-Agent') matches '/chrome/i' “`
 - `/* requirements={"codigoEntero"="\d+"}`
 - `/* methods={"HEAD", "GET"}`
 - `/* name="route_name"`
-- `/* paramConverter {entity_id}` https://symfony-com.translate.goog/bundles/SensioFrameworkExtraBundle/current/annotations/converters.html?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=wapp
+- `/* paramConverter {entity_id}` <https://symfony-com.translate.goog/bundles/SensioFrameworkExtraBundle/current/annotations/converters.html?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=wapp>
 - `/* {_locale} {_format}`
 
-## Restrict URL parameters
+### Restrict URL parameters
+
 Se usan las anotaciones: requirements
->`*   requirements={ `
->`*     "_locale": "en|fr|es", `
->`*     "_format": "html|xml|json", `
->`*     "variable"="\d+" `
->`*   } `
+>`*   requirements={`
+>`*     "_locale": "en|fr|es",`
+>`*     "_format": "html|xml|json",`
+>`*     "variable"="\d+"`
+>`*   }`
 >`* )`
 
-## Set default values to URL parameters
+### Set default values to URL parameters
+
 - Se puede asignar en comentarios o en la función.
 `{slug<\C+>?defaultAnnotation}`
 
-## Special internal routing attributes
+### Special internal routing attributes
+
 `/ {_locale} {_format}`
 
-## Domain name matching
-condition="request.headers.get('User-Agent') matches '/chrome/i'" 
+### Domain name matching
 
-## Conditional request matching
+condition="request.headers.get('User-Agent') matches '/chrome/i'"
+
+### Conditional request matching
+
 Se puede usar en la condición los objetos context, request y ENV_VARS % % [OR AND]
-condition="context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-Agent') matches '/chrome/i'" 
+condition="context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-Agent') matches '/chrome/i'"
 
-## HTTP methods matching
-`/* condition="context.getMethod() in ['GET', 'HEAD']" `
+### HTTP methods matching
 
-# Console
-## Built-in commands
+`/* condition="context.getMethod() in ['GET', 'HEAD']"`
+
+## Console
+
+### Built-in commands
+
 - Para ejecutar un comando desde consola se debe usar el comando: php bin/console “comando”
 - Para ver la lista de comandos se usa el comando: php bin/console list
   - Agregarndo --short al comando retornara la lista de comandos sin la descripción
@@ -244,7 +296,8 @@ condition="context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-
   - `$ APP_ENV=prod php bin/console cache:clear`
 - TIP (Symfony 6): Se puede agregar un autocompletar usando TAB agregando la la extensión para symfony en el sistema: `php bin/console completion bash | sudo tee /etc/bash_completion.d/console-events-terminate`
 
-## Custom commands
+### Custom commands
+
 Los comandos se definen en clases que amplian la clase Command
 
 - Crear una clase que extienda Command
@@ -252,7 +305,7 @@ Los comandos se definen en clases que amplian la clase Command
   - Agregar un nombre al comando: `protected static $defaultName = 'app:create-user';`
   - Crear una función execute que retorna el ID de respuesta: `protected function execute(InputInterface $input, OutputInterface $output): int`
     - `Command::SUCCESS;` // Si el comando se ejecuto sin problemas => 1
-    -  `Command::FAILURE;` // Si ocurrió un error => 1
+    - `Command::FAILURE;` // Si ocurrió un error => 1
     - `Command::INVALID;` // Si el comando se ejecutó erroneamente => 2
 
   - Agregar una descripción al comando: `protected static $defaultDescription = 'Creates a new user.';`
@@ -262,29 +315,30 @@ Los comandos se definen en clases que amplian la clase Command
     - `$this->setHelp('This command allows you to create a user...')`
 
   - A partir de PHP 8 se puede definir el comando haciendo uso de los comentarios
+
 >`#[AsCommand(`
->`    name: 'app:create-user',`
->`    description: 'Creates a new user.',`
->`    hidden: false,`
->`    aliases: ['app:add-user']`
+>`name: 'app:create-user',`
+>`description: 'Creates a new user.',`
+>`hidden: false,`
+>`aliases: ['app:add-user']`
 >`)]`
 
-  - Si no se pueden usar los atributos de PHP se deberá registrar el servicio y etiquetarlo con console.command: `config/services.yaml`
+- Si no se pueden usar los atributos de PHP se deberá registrar el servicio y etiquetarlo con console.command: `config/services.yaml`
+
 >`services:`
->`    App\Twig\AppExtension:`
->`        tags: ['twig.extension']`
+>`App\Twig\AppExtension:`
+>`tags: ['twig.extension']`
 
-  - Salida de consola: con la variable  OutputInterface $output 
-    - Se puede imprimir mensajes con salto de linea: `$output->writeln('Whoa!')`
-    - Se pueden imprimir mensajes sin salto de linea: `$output->write('create a user.');`
-    - Se puede imprimir mensajes durante la ejecución del comando haciendo uso de `$output->section()`. Eso creará una nueva sección para cada mensaje con: `$section1->writeln('Hello');` Y permitira sobreescribirlas con `$section1->overwrite('Goodbye')` así se podrán mostrar mensajes de avance  sobre la ejecución. Finalmente se puede limpiar toda la sección con el método: `$section2->clear();`
+- Salida de consola: con la variable  OutputInterface $output
+  - Se puede imprimir mensajes con salto de linea: `$output->writeln('Whoa!')`
+  - Se pueden imprimir mensajes sin salto de linea: `$output->write('create a user.');`
+  - Se puede imprimir mensajes durante la ejecución del comando haciendo uso de `$output->section()`. Eso creará una nueva sección para cada mensaje con: `$section1->writeln('Hello');` Y permitira sobreescribirlas con `$section1->overwrite('Goodbye')` así se podrán mostrar mensajes de avance  sobre la ejecución. Finalmente se puede limpiar toda la sección con el método: `$section2->clear();`
 
+- Entrada de consola:
+  - Para especificar los argumentos de entrada se deben usar el siguiente método en al función configure: `$this->addArgument('username', InputArgument::REQUIRED, 'The username of the user.')` O se puede especificar en los nested attributes (atributos anidados) si se usa PHP 8
+  - Para obtener las argumentos se usa `$input->getArgument('username')`
 
-  - Entrada de consola: 
-    - Para especificar los argumentos de entrada se deben usar el siguiente método en al función configure: `$this->addArgument('username', InputArgument::REQUIRED, 'The username of the user.')` O se puede especificar en los nested attributes (atributos anidados) si se usa PHP 8
-    - Para obtener las argumentos se usa `$input->getArgument('username')`
-
-  - Se puede usar inyección de dependencias en el controlador como en cualquier servicio dado que los comandos se encuentran registrados como servicios. **NOTA: no olvidar llamar el cosntructor padre al final del controlador para obtener las variables establecidas: `parent::__construct();`**
+- Se puede usar inyección de dependencias en el controlador como en cualquier servicio dado que los comandos se encuentran registrados como servicios. **NOTA: no olvidar llamar el cosntructor padre al final del controlador para obtener las variables establecidas: `parent::__construct();`**
 
 - Ciclo de vida de los comandos:
   - `initialize()` OPCIONAL: Este método se ejecuta antes que interact()los execute()métodos y . Su objetivo principal es inicializar las variables utilizadas en el resto de los métodos de comando.
@@ -294,48 +348,53 @@ Los comandos se definen en clases que amplian la clase Command
     - Este metodo se encarga de ejecutar el comando en sí.
 
 #### Estilos de comandos
+
 `clase SymfonyStyle $io = new SymfonyStyle($input, $output);`
-  - Declarar un titulo `$io->title('Lorem Ipsum Dolor Sit Amet');`
-  - Declarar una sección: `$io->section('Adding a User');`
 
-  - Métodos de contenido
-    - `$io->text(array|string $texto)`: mostrar cadenas de texto 
-    - `$io->listing(array $lista)`: Muestra una lissta en base a una matriz
-    - `$io->table(array $headerTable, array $table)`: Muestra una tabla
-    - `$io->horizontalTable(array $headerTable, array $table)`: Muestra una tabla horizontal
-    - `$io->definitionList(mixed $title, mexed $table)`: Muestra los key => valuepares dados como una lista compacta de elementos:
-    - `$io->newLine(?int $lineNumber);` crea una nueva linea
+- Declarar un titulo `$io->title('Lorem Ipsum Dolor Sit Amet');`
+- Declarar una sección: `$io->section('Adding a User');`
 
-  - Métodos de amonestación
-    - `$io->note(string|array $messages)`: Muestra una advertencia
-    - `$io->caution(string|array $messages)`: Muestra un mensaje de error
+- Métodos de contenido
+  - `$io->text(array|string $texto)`: mostrar cadenas de texto
+  - `$io->listing(array $lista)`: Muestra una lissta en base a una matriz
+  - `$io->table(array $headerTable, array $table)`: Muestra una tabla
+  - `$io->horizontalTable(array $headerTable, array $table)`: Muestra una tabla horizontal
+  - `$io->definitionList(mixed $title, mexed $table)`: Muestra los key => valuepares dados como una lista compacta de elementos:
+  - `$io->newLine(?int $lineNumber);` crea una nueva linea
 
-  - Métodos de barra de progreso
-    - `$io->progressStart();` Muestra una barra de progreso
-    - `$io->progressStart(100);` Muestra una barra de progreso con 100 pasos 
-    - `$io->progressAdvance(?int = 1);` Hace avanzar la barra de progreso n pasos
-    - `$io->progressFinish();` Finaliza la barra de progreso
-    - `$io->progressIterate(array $iterable)` El helper progressIterable sirve para avanzar la barra de progreso en base a una variable iterable, en foreach SYMFONY 6.1
-    - `$io->createProgressBar();` Crea una instancia de ProgressBar de acuerdo a la guía de estilos de symfony
+- Métodos de amonestación
+  - `$io->note(string|array $messages)`: Muestra una advertencia
+  - `$io->caution(string|array $messages)`: Muestra un mensaje de error
 
-  - Métodos de entrada del usuario
-    - `$io->ask(string $pregunta, any $default, function $validator)` Preguntar por un valor
+- Métodos de barra de progreso
+  - `$io->progressStart();` Muestra una barra de progreso
+  - `$io->progressStart(100);` Muestra una barra de progreso con 100 pasos
+  - `$io->progressAdvance(?int = 1);` Hace avanzar la barra de progreso n pasos
+  - `$io->progressFinish();` Finaliza la barra de progreso
+  - `$io->progressIterate(array $iterable)` El helper progressIterable sirve para avanzar la barra de progreso en base a una variable iterable, en foreach SYMFONY 6.1
+  - `$io->createProgressBar();` Crea una instancia de ProgressBar de acuerdo a la guía de estilos de symfony
+
+- Métodos de entrada del usuario
+  - `$io->ask(string $pregunta, any $default, function $validator)` Preguntar por un valor
 Si al validar el parametro no es correcto, ejectue un error con la clase: throw new \RuntimeException(
-    - `$io->askHidden(string $pregunta, any $default, function $validator)` preguntar por un valor sin mostrar el ingreso del usuario
-    - `$io->confirm(string $pregunta, mixed $default)` Preguntar para obtener una respuesta del usuario, el segundo campo que se pasa es el valor predeterminado
-    - `$io->choice(string $pregunta, array $opciones, mixed $respuestaDefault)` Hace una pregunta cuya respuesta está restringida a la lista dada de respuestas válidas
+  - `$io->askHidden(string $pregunta, any $default, function $validator)` preguntar por un valor sin mostrar el ingreso del usuario
+  - `$io->confirm(string $pregunta, mixed $default)` Preguntar para obtener una respuesta del usuario, el segundo campo que se pasa es el valor predeterminado
+  - `$io->choice(string $pregunta, array $opciones, mixed $respuestaDefault)` Hace una pregunta cuya respuesta está restringida a la lista dada de respuestas válidas
 
-  - Métodos de resultados
-    - `$io->success(string|array $mensaje(s))` Muestra la cadena dada o la matriz de cadenas resaltada como un mensaje exitoso (con un fondo verde y la [OK]etiqueta)
-    - `$io->info(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, sin mostrar el resultado como exitoso o fallido:
-    - `$io->warning(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
-    - `$io->error(string|array $mensaje(s))` . Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
+- Métodos de resultados
+  - `$io->success(string|array $mensaje(s))` Muestra la cadena dada o la matriz de cadenas resaltada como un mensaje exitoso (con un fondo verde y la [OK]etiqueta)
+  - `$io->info(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, sin mostrar el resultado como exitoso o fallido:
+  - `$io->warning(string|array $mensaje(s))` Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
+  - `$io->error(string|array $mensaje(s))` . Está destinado a usarse una vez para mostrar el resultado final de ejecutar el comando dado, pero puede usarlo repetidamente durante la ejecución del comando
 
-# Templates / Twig
+## Templates / Twig
+
 Es un motor de plantillas flexible, rápido y seguro
 
-## Lenguaje de plantillas Twig
+### Lenguaje de plantillas Twig
+
 La  sintaxis de Twig se basa en tres construcciones:
+
 - `{{ .. }}` Utilizado para mostrar el contenido de una variable o el resultado de evaluar una expresión
 - `{% ... %}` Utilizado para ejecutar alguna lógica, como un condicional o bluccle
 - `{# ... #}` Utilizado para agregar comentarios a la plantilla ( estos comentarios no se incluten en la página representada)
@@ -346,23 +405,28 @@ Twig prporciona algo de lógica en sus plantillas, ej: filtros `{{ titulo|upper 
 - En el entorno `dev`:  Las plantillas se vuelven a compilar automáticamente cuando se modifican
 
 #### Para ver la configuración de twig
-https://symfony.com/doc/4.4/reference/configuration/twig.html
 
-## Creación de plantillas 
+<https://symfony.com/doc/4.4/reference/configuration/twig.html>
+
+### Creación de plantillas
 
 #### Denominación de plantillas
+
 - Utilizar snake_case para los nombres de archivos y directorios. Ej: `admin/default_theme/blog/blog_post.html.twig`
 - Definir dos extensiones para los archivos, siendo la primer extensión, la extensión de la plantilla (`html`, `xml`, etc...) y `twig` para el final
 
 Las plantillas pueden generar cualquier formato basado en textos
 
 #### Ubicación de la plantilla
+
 Las plantillas se almacenan de forma predeterminada en el directorio `templates/`. Cuando se representa la plantilla `product/index.html.twig` en realidad se está refiriendo al archivo `<projecto>/templates/product/index.html.twig`.
 
 El directorio predeterminado de las plantillas se puede cambiar en `twig.default_path`.
 
 #### Variables de plantilla
+
 Ejemplo del orden en que Twig busca el atributo d eun objeto:
+
 1. $foo['bar'](matriz y elemento);
 2. $foo->bar(objeto y propiedad pública);
 3. $foo->bar()(objeto y método público);
@@ -372,15 +436,17 @@ Ejemplo del orden en que Twig busca el atributo d eun objeto:
 7. Si no existe ninguno de los anteriores, use null(o lance una Twig\Error\RuntimeErrorexcepción si la opción strict_variables está habilitada).
 
 #### Links a páginas
+
 - Para generar una dirección URL relativa a una acción determinada se debe usar `path('nombre_accion')``
 
-  - Ejemplo: `<a href="{{ path('blog_index') }}">Homepage</a> ``
+  - Ejemplo: `<a href="{{ path('blog_index') }}">Homepage</a>`
 
-- Para generar una dirección URL absolugar se debe usar `url('nombre_accion')``
+- Para generar una dirección URL absolugar se debe usar `url('nombre_accion')`
 
-  - Ejemplo: `<a href="{{ url('blog_index') }}">Homepage</a> ``
+  - Ejemplo: `<a href="{{ url('blog_index') }}">Homepage</a>`
 
-## Vincular a CSS, JavaScript y activos de imagen
+### Vincular a CSS, JavaScript y activos de imagen
+
 Si una plantilla necesita vincularse a un activo estatico, por ejemplo una imagen, css o javascript. Symfony proporciona la función 'asset()'. Instalando el paquete `composer require symfony/asset`
 
 Ejemplo:
@@ -388,7 +454,7 @@ Ejemplo:
 
 - Para rutas absulutas de assets usar `absolute_asset('pag/ass.ext')`
 
-## La variable global de la aplicación
+### La variable global de la aplicación
 
 > Symfony crea un objeto de contexto que se inyecta en cada plantilla de Twig automáticamente como una variable llamada `app`. Proporciona acceso a cierta información de la aplicación
 
@@ -401,15 +467,15 @@ Ejemplo:
 - `app.token` Un objeto TokenInterface que representa el token de seguridad.
 
 - También se pueden inyectar variables en todas las plantillas, ver:
-https://symfony.com/doc/4.4/templating/global_variables.html
+<https://symfony.com/doc/4.4/templating/global_variables.html>
 
-## Componentes Twig
+### Componentes Twig
 
 Los componentes Twig son una forma alternativa de representar plantillas, donde cada plantilla está vinculada a una "clase de componente". Esto hace que sea más fácil representar y reutilizar pequeñas "unidades" de plantilla, como una alerta, marcado para un modal o una barra lateral de categoría.
-https://symfony.com/bundles/ux-twig-component/current/index.html
+<https://symfony.com/bundles/ux-twig-component/current/index.html>
 
 Los componentes de Twig también tienen otro superpoder: pueden volverse "en vivo", donde se actualizan automáticamente (a través de Ajax) a medida que el usuario interactúa con ellos. Por ejemplo, cuando su usuario escribe en un cuadro, su componente Twig se volverá a procesar a través de Ajax para mostrar una lista de resultados.
-https://symfony.com/bundles/ux-live-component/current/index.html
+<https://symfony.com/bundles/ux-live-component/current/index.html>
 
 Para renderizar un componente de plantilla Twig, en el controlador que extiende de `AbstractController` se debe usar `$this->renderView`. Ej:
 
@@ -422,19 +488,20 @@ Para renderizar un componente de plantilla Twig, en el controlador que extiende 
 
 Esto renderizará únicamente la porción correspondiente al componente.
 
-## Representación de una plantilla en servicios
+### Representación de una plantilla en servicios
 
 Inyectando la clas `use Twig\Environment` se puede hacer uso de twig en un Servicio.
 
-## Representación de una plantilla en correo electronicos
+### Representación de una plantilla en correo electronicos
 
-https://symfony.com/doc/4.4/mailer.html#mailer-twig
+<https://symfony.com/doc/4.4/mailer.html#mailer-twig>
 
-## Comprobar si existe una plantilla
+### Comprobar si existe una plantilla
 
 Para comprobar si existe una plantilla Twig debemos usar un Loader de plantillas, este se puede obtener obtener inyectando la clas "Twig\Enviroment" y  llamando al método `->getLoader()`. Luego con el loader usar el método `->exists('theme/plantilla.html.twig')``
 
-## Depuración de Plantillas
+### Depuración de Plantillas
+
 Symfony proporciona varias utilidades para ayudarte a depurar problemas en las plantillas.
 
 El comando `lint:twig` verifica que las platillas de Twig no tengan errores de sintaxis. Es útil implementarlo en servidores de integración continua.
@@ -464,14 +531,15 @@ php bin/console debug:twig --filter=date
 - Pasar el path del archivo a debugear
 php bin/console debug:twig @Twig/Exception/error.html.twig
 
-## Las utiidades de Dump Twig
+### Las utiidades de Dump Twig
+
 Symfony proporciona una función dump(), pero es necesario primero instalar el paquete: `composer require symfony/var-dumper`
 
 Luego se puede usar `{% dump %} o {{ dump() }} según el requemrimiento
 
 Por razones de seguridad dump solo funciona en entornos de desarrollo, en `prod` o `test` se verá un error.
 
-## Incluir plantillas
+### Incluir plantillas
 
 Se pueden incluir plantillas dentro de otras plantillas haciendo uso de `include()`. Ej:
 
@@ -481,15 +549,17 @@ Se pueden incluir plantillas dentro de otras plantillas haciendo uso de `include
 Una mejor alternativa es incrustar el resultado de ejecutar algún controlador con las funciones `render()` y `controller()` Twig.
 
 EJ:
-- ` {{ render(url('latest_articles', {max: 3})) }}`
+
+- `{{ render(url('latest_articles', {max: 3})) }}`
 - `render(controller( 'App\\Controller\\BlogController::recentArticles', {max: 3} ))`
 
 **La incrustación de controladores requiere realizar solicitudes a esos controladores y generar algunas plantillas como resultado.**
 
 Las plantillas también pueden incrustar contenido de forma asincronica con la libreria hinclude.js, ver:
-https://symfony.com/doc/4.4/templating/hinclude.html
+<https://symfony.com/doc/4.4/templating/hinclude.html>
 
-## Herencia de plantillas y diseños
+### Herencia de plantillas y diseños
+
 > El concepto de herencia de plantillas Twig es similar a la herencia de clases de PHP. Usted define una plantilla principal a partir de la cual pueden extenderse otras plantillas y las plantillas secundarias pueden anular partes de la plantilla principal.
 
 Symfony recomienda la siguiente herencia de plantillas de tres niveles para aplicaciones medianas y complejas:
@@ -513,11 +583,11 @@ La etiqueta `{% block %}` determina un espacio de bloque en la plantilla.
 
 - ***Cuando se usa extends, una plantilla secundaria tiene prohibido definir partes de la plantilla fuera de un bloque. El siguiente código arroja un SyntaxError***
 
-## Escape de salida
+### Escape de salida
 
 Para mostrar una variable sin pasar por los filtros de seguridad de XSS de Twig, use el filtro `raw`. Ej: {{ product.title|raw }}
 
-## Espacios de nombre en plantillas
+### Espacios de nombre en plantillas
 
 Para configurar espacios de nombre para plantillas almacenadas en directorios distintos a `templates/`. Se debe configurar `paths` en `config/packages/twig.yaml`
 
@@ -535,11 +605,11 @@ Para configurar espacios de nombre para plantillas almacenadas en directorios di
 
 Despues se pueden renderizar de esta forma: `@email/layout.html.twigy` `@admin/layout.html.twig`
 
-## Paquete de plantillas
+### Paquete de plantillas
 
 Si instala `paquetes/bundles` en su aplicación, pueden incluir sus propias plantillas Twig (en el `Resources/views/directorio` de cada paquete). Para evitar jugar con tus propias plantillas, Symfony agrega plantillas de paquetes en un espacio de nombres automático creado después del nombre del paquete.
 
 Por ejemplo, las plantillas de un paquete llamado AcmeFooBundleestán disponibles en el espacio de AcmeFoonombres. Si este paquete incluye la plantilla `<your-project>/vendor/acmefoo-bundle/Resources/views/user/profile.html.twig`, puede referirse a ella como `@AcmeFoo/user/profile.html.twig`
 
 También se pueden sobre escribir plantillas de otos paquetes:
-https://symfony.com/doc/4.4/bundles/override.html
+<https://symfony.com/doc/4.4/bundles/override.html>
