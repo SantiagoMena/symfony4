@@ -1,2 +1,5 @@
-Cargar datos para pruebas: <br>
-php bin/console doctrine:fixtures:load
+
+## Cargar datos para pruebas:
+
+`doctrine:schema:create`
+`php bin/console doctrine:fixtures:load`
