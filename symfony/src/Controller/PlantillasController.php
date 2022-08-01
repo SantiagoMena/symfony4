@@ -54,4 +54,16 @@ class PlantillasController extends AbstractController
     {
         return $this->render('plantillas/assets.html.twig');
     }
+
+    /**
+     * @Route("/variable-app", name="variable_app")
+     */
+    public function variableApp(): Response
+    {
+        $this->addFlash('alerta', 'flash');
+
+    //    $this->sessions->set('session', 'session');
+
+        return $this->render('plantillas/variable_app.html.twig');
+    }
 }
