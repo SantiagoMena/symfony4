@@ -61,4 +61,14 @@ class PlantillasControllerTest extends WebTestCase
         $this->assertSelectorTextContains("[id='app.token']", "Token");
 
     }
+
+    public function testSubRenderView()
+    {
+        $client = static::createClient();
+        $param = 'test';
+        $crawler = $client->request('GET', '/plantillas/render-view', ['param' => $param]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame("[id='render-view']", $param);
+    }
 }

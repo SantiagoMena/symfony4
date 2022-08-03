@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 
 /**
@@ -62,8 +63,20 @@ class PlantillasController extends AbstractController
     {
         $this->addFlash('alerta', 'flash');
 
-    //    $this->sessions->set('session', 'session');
-
         return $this->render('plantillas/variable_app.html.twig');
+    }
+
+    /**
+     * @Route("/render-view", name="render_view")
+     */
+    public function subRenderView(Request $request): Response
+    {
+        $renderView = $this->renderView('plantillas/render_view.html.twig', [
+            'param' => $request->query->get('param')
+        ]);
+
+        return $this->render('plantillas/index_render_view.html.twig', [
+            'render_view' => $renderView
+        ]);
     }
 }
