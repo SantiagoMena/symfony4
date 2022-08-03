@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\PlantillaService;
+use Twig\Environment;
 
 
 /**
@@ -88,5 +89,16 @@ class PlantillasController extends AbstractController
     {
         $param = $request->query->get('param');
         return new Response($plantillaService->renderByService($param));
+    }
+
+    /**
+     * @Route("/exists", name="exists")
+     */
+    public function existsTemplate(Environment $twig): Response
+    {
+        $loader = $twig->getLoader();
+        return $this->render('plantillas/exists.html.twig', [
+            'exist' => $loader->exists('plantillas/exists.html.twig'),
+        ]);
     }
 }

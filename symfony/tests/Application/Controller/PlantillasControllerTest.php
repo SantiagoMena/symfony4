@@ -81,4 +81,13 @@ class PlantillasControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame("[id='twig-service']", $param);
     }
+
+    public function testExistsTemplate()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/plantillas/exists');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', 'existe');
+    }
 }
