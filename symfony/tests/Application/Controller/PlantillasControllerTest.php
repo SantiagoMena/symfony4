@@ -52,9 +52,13 @@ class PlantillasControllerTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/plantillas/variable-app');
 
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame("[id='app.request.host']", "localhost");
+        $this->assertSelectorTextSame("[id='app.flash']", "flash");
+        $this->assertSelectorTextSame("[id='app.environment']", $client->getKernel()->getEnvironment());
         $this->assertSelectorTextSame("[id='app.debug']", "1");
-        // $this->assertSelectorTextSame("[id='app.environment']", "dev");
+        $this->assertSelectorTextContains("[id='app.token']", "Token");
+
     }
 }
