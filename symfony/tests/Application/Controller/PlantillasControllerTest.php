@@ -71,4 +71,14 @@ class PlantillasControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame("[id='render-view']", $param);
     }
+
+    public function testRenderService()
+    {
+        $client = static::createClient();
+        $param = 'test';
+        $crawler = $client->request('GET', '/plantillas/render-service', ['param' => $param]);
+        
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame("[id='twig-service']", $param);
+    }
 }

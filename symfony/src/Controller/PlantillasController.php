@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\PlantillaService;
 
 
 /**
@@ -78,5 +79,14 @@ class PlantillasController extends AbstractController
         return $this->render('plantillas/index_render_view.html.twig', [
             'render_view' => $renderView
         ]);
+    }
+
+    /**
+     * @Route("/render-service", name="render_service")
+     */
+    public function renderService(Request $request, PlantillaService $plantillaService): Response
+    {
+        $param = $request->query->get('param');
+        return new Response($plantillaService->renderByService($param));
     }
 }
