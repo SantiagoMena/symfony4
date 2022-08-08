@@ -118,4 +118,12 @@ class PlantillasController extends AbstractController
             'articles' => $articles
         ]);
     }
+
+    /**
+     * @Route("/namespace-template", name="namespace_template")
+     */
+    public function namespaceTemplate(): Response
+    {
+        return $this->render('@namespace/index.html.twig');
+    }
 }

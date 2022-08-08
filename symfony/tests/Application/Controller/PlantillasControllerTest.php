@@ -101,4 +101,13 @@ class PlantillasControllerTest extends WebTestCase
         $this->assertSame('titulo blog 1', $crawler->filter('h2')->eq(0)->text());
         $this->assertSame('titulo blog 2', $crawler->filter('h2')->eq(1)->text());
     }
+
+    public function testNamespaceTemplate()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/plantillas/namespace-template');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h1', '@namespace/index');
+    }
 }
