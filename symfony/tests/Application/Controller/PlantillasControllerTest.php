@@ -90,4 +90,15 @@ class PlantillasControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h1', 'existe');
     }
+
+    public function testExtendsTemplate()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/plantillas/extends-template');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertPageTitleContains('Blog Index');
+        $this->assertSame('titulo blog 1', $crawler->filter('h2')->eq(0)->text());
+        $this->assertSame('titulo blog 2', $crawler->filter('h2')->eq(1)->text());
+    }
 }

@@ -1,0 +1,8 @@
+{% extends "plantillas/herencia/layout.html.twig" %}
+ {% block title %}Blog Index{% endblock %}
+ {% block page_contents %} 
+ {% for article in articles %}
+  <h2>{{ article.title }}</h2> 
+  <p>{{ article.body }}</p> 
+  {% endfor %} 
+{% endblock %}
