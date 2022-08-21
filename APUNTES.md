@@ -6,8 +6,8 @@
 - [x] Creating Pages
 - [x] Routing / Generating URLs
 - [x] Controllers
-- [ ] Templates / Twig
-- [ ] Configuration / Env Vars
+- [x] Templates / Twig
+- [x] Configuration / Env Vars
 
 #### ARCHITECTURE
 
@@ -613,3 +613,334 @@ Por ejemplo, las plantillas de un paquete llamado AcmeFooBundleestán disponible
 
 También se pueden sobre escribir plantillas de otos paquetes:
 <https://symfony.com/doc/4.4/bundles/override.html>
+
+## Configurando Symfony
+
+Las aplicciones de symfony se encuentran configuradas con los archivos guaardados en el directorio `config/` el cual tiene la siguiente estructura:
+
+your_proyect/
+- config/
+  - packages/
+  - bundles.php
+  - routes.yaml
+  - services.yaml
+
+El archivo `routes.yaml` define la configuración de rutas; el archivo `services.yaml` configura los servicios del contenedor de servicios (service container); el archivo `bundles.php` habilita o deshabilita paquetes en la aplicación.
+
+El directorio `config/packages/` guarda la configuración de cada paquete instalado en a aplicación. Los paquetes llamados `bundles` agregar caracteristicas listas para usar en el proyecto.
+
+Cuando se usa `Symfony Flex` que está activado por default en las aplicaciones de Symfony, los paquetes editan el archivo `bundles.php` y crear nuevos archivos en `config/packages`automaticamente durante su instalación.
+
+**Para conocer más sobre las configuraciones disponibles se puede usar el siguiente comando `config:dump-reference`**
+
+### Formatos de configuración
+
+A diferencia de otros frameworks, Symfony no impoe un formato de configuración especifico. Symfony permite elegir entre YAML, XML y PHP y toda la documentación de symfony cuenta con ejemplos en los tres formatos.
+
+Practicamente no existe diferencia entre los formatos. De hecho symfony transforma y crea un cache de cada uno en formato PHP despues corre la aplicación, así que no hay diferencia de performance entre los diferentes formators.
+
+YAML es usado por defecto cuando se instalan los paquetes porque es conciso y de facil lectura. Estas son las ventajas y desventajas entre cada formato:
+
+- **YAML:** Simple, limpio y de facil lectura, pero no todos los IDEs soportan la validación y autocompletado
+- **XML:** La mayoria de IDEs soportan el autocompletado y la validación, además es procesado nativamente por PHP, pero algunas configuraciones deben se muy detalladas.
+- **YAML:** Muy poderoso y permite que se creen dinamicamente las configuraciones, pero el resultado de la configuración es menos legible que los otros formatos.
+
+### Importing Configuration Files
+
+Symfony carga archivos de configuración usando el componente `Config` el cual provee caracteristica avanzada como importaar otros archivos de configuración, incluso si usan diferente formato:
+
+    # config/services.yaml:
+  
+    imports:
+    - { resource: 'legacy_config.php' }
+
+    # glob expressions are also supported to load multiple files
+    - { resource: '/etc/myapp/*.yaml' }
+
+    # ignore_errors: not_found silently discards errors if the loaded file doesn't exist
+    - { resource: 'my_config_file.xml', ignore_errors: not_found }
+    # ignore_errors: true silently discards all errors (including invalid code and not found)
+    - { resource: 'my_other_config_file.xml', ignore_errors: true }
+
+### Paramtros de configuración
+
+En ocasiones los mismos valores de configuración son usados en varios archivos de configuración. En lugar de repetirlos, se pueden definir como parametros, es como usar valores de configuración reutilizables. Por convención los para metros están definidos debajo de la llave `parameters`en el archivo `config/services.yaml`
+
+    # config/services.yaml
+    parameters:
+        # the parameter name is an arbitrary string (the 'app.' prefix is recommended
+        # to better differentiate your parameters from Symfony parameters).
+        app.admin_email: 'something@example.com'
+
+        # boolean parameters
+        app.enable_v2_protocol: true
+
+        # array/collection parameters
+        app.supported_locales: ['en', 'es', 'fr']
+
+        # binary content parameters (encode the contents with base64_encode())
+        app.some_parameter: !!binary VGhpcyBpcyBhIEJlbGwgY2hhciAH
+
+        # PHP constants as parameter values
+        app.some_constant: !php/const GLOBAL_CONSTANT
+        app.another_constant: !php/const App\Entity\BlogPost::MAX_ITEMS
+
+***Precaución: cuanto se usa la configuración XML, el valor dentro del tag `<parameter>` no se le borraran los espacios en blanco.***
+
+Una vez definido, se puede hacer referencia al valor del parametro desde cualquier archivo de configuración usando la sintaxis: envolviendo el parametro entre dos `%` (ej: `app.admin_email`)
+
+    # config/packages/some_package.yaml
+    some_package:
+        # any string surrounded by two % is replaced by that parameter value
+        email_address: '%app.admin_email%'
+
+***Nota: si algún parameotro incluye el caracter `%`, será necesario escaparlo agregando otro `%` por lo tanto Symfony no lo considerara como una referencia al parametro.***
+
+    # config/services.yaml
+    parameters:
+        # Parsed as 'https://symfony.com/?foo=%s&amp;bar=%d'
+        url_pattern: 'https://symfony.com/?foo=%%s&amp;bar=%%d'
+
+***Nota: Debido a la forma en que se resuelven los parametros, no se pueden usar para realizar importaciones dinamicamente. Eso significa que alg como lo siguiente no funciona:***
+
+    # config/services.yaml
+    imports:
+        - { resource: '%kernel.project_dir%/somefile.yaml' }
+
+Los parametros en Symfony son muy comunes. Algunos paquetes definen sus propios parametros. (Ej: cuando se instala el paquete de traducción, un nuevo parametro `locale`es agregado al archivo `config/services.yaml`).
+
+### Entornos de Configuración
+
+Tienes sólo una aplicación, pero sin embargo necesitas en ocasiones que se comporte distinto en diferentes momentos:
+
+- Mientras desarrolla, necesitas realizar un log de todo y mostrar buenas herramientas de depuración.
+- Despues de desplegar la aplicación en producción necesitas la misma aplicación optimizada para la velocidad y solo registrar los errores.
+
+Los archivos guardados en `config/packages/` son usados por Symfony para configurar los servicios de la aplicación. En otras palabras, es posible cambiar el comportamiento de la aplicación cambiando los archivos de coniguración cargados. Esa es la idea de los entornos de configuración de Symfony.
+
+Una aplicación tipica de Symfony inicia con tres entornos: `dev` (para el desarrollo local), `prod` (para los servidores de producción) y `test`(para los test automaticos). Cuando corres la aplicación, Symfony carga los archivos de configuración en este orden (el ultimo archivo puede sobre escribir los valores asignados en el anterior):
+
+1. `config/packages/*yaml` (y los archivos `*.xml` y `*.php` también)
+2. `config/packages/<enviroment-name>/*.yaml` (y los archivos `*.xml` y `*.php` también)
+3. `config/services.yaml`  (y los archivos `services.xml` y `services.php` también)
+4. `config/services_<enviroment-name>.yaml` (y los archivos `services_<enviroment-name>.xml` y `services_<enviroment-name>.php` también)
+
+Toma el paquete `framework`, instalado por defecto, como ejemplo:
+
+- Primero, `config/packages/framework.yaml` está cargado en todos los etornos y se configura con algunas opciones
+- En el entorno `prod`, no hay nada extra asignado y no existe el archivo `config/packages/prod/framework.yaml`
+- En el entorno `dev`, no hay nada extra asignado y no existe el archivo `config/packages/prod/framework.yaml`
+- En el entorno `test` el archivo `config/packages/test/framework.yaml` está cargado y sobre escribe algunas configuraciones previas del archivo `config/packages/framework.yaml`
+
+En realidad, cada entorno se diferencia solo algo de los otros. Esto significa que todos los entornos comparten una gran base de configuración, que se encuentra en los archivo del directorio `config/packages/` directamente.
+
+### Seleccionando el Entorno Activo
+
+Las aplicaciones de Symfony vienen con un archivo llamado `.env` ubicado en el directorio raiz del proyecto. Este archivo es usado para definir el valor del entorno.
+
+Abre el archivo `.env` (o mejor, el archivo `.env.local` si haz creado uno) y edita el valor de la variable `APP_ENV` para cambiar el entorno, por ejemplo correr la aplicación en producción:
+
+      # .env (or .env.local)
+      APP_ENV=prod
+
+Este valor es usado tanto para la web como para la consola de comandos. De todas formas puedes sobre escribir este en la consola de comando anteponiendo `APP_ENV`.
+
+      APP_ENV=prod php bin/console command_name
+
+### Creando un nuevo entorno
+
+Los tres entornos proporcionados por Symfony son suficientes para la mayoría de proyectos, pero también puedes definir tus propios entornos. Por ejemplo, así es como puedes definir un entorno de `staging` cuando el cliente quiere probar la aplicación antes del entorno de producción.
+
+1. Crea un directorio de configuración con el mismo nombre del entorno (en este caso `config/packages/staging/`);
+2. Agrega la configuración que necesitas en `config/packages/staging/` para definir los comportamientos del nuevo entorno. Symfony cargará primero los archivos `config/packages/*.yaml`, por lo tanto solo necesitas definir las diferencias de estos archivos.
+3. Selecciona en entorno `staging` usando la variable env `APP_ENV` tal como fue explicado anteiormente.
+
+**Tip: es comun que para entornos similares se use la misma configuración, así que puedes usar links simbolicos entre los directorios `config/packages/<environment-name>/` para reusar la misma configuración**
+
+En lugar de crear nuevos entornos, puedes usar variables de entorno como se explica en la siguiente sección. De esta forma podras usar la misma aplicación y entorno (ej: `prod`), pero cambiando su conmportamiento gracias a la configuracion de las variables de entorno (ej: correr la aplicación en diferentes escenarios: stagign, quality assurance, client review, etc...)
+
+### Configtuación Basada en en Variables de Entorno
+
+Usar las viriables de entorno ("env vars") es una practica comun para configurar opciones que dependen de donde corre la aplicación (Ej: las credenciales de la base de datos son usualmente diferentes en producción en comparación a la maquina local). Si los valores son sensibles, puedes encriptarlos como secretos (https://symfony.com/doc/4.4/configuration/secrets.html)
+
+Se puede referenciar las variables de entorno usando la sintaxis especial `%env(ENV_VAR_NAME)%`. Los valores de estas opciones son resueltos en tiempo de ejecución (solo uno por consulta, para no impactar en el performance).
+
+Este ejemplo muestra como se puede configurar la conexión a la base de datos usando las variables de entorno:
+
+      # config/packages/doctrine.yaml
+      doctrine:
+          dbal:
+              # by convention the env var names are always uppercase
+              url: '%env(resolve:DATABASE_URL)%'
+          # ...
+
+Los valores de las variables de entorno solo pueden ser strings, pero Symfony incluye algunos procesadores de env vars para transformar su contenido (E.J. Convertir un string a integer)
+
+#### Env Var Processors
+
+- `env(string:FOO)` => procesar como string
+- `env(bool:FOO)` => procesar como boolean (los valores `true` son `on`, `true`, `yes` y todos los número excepto el `0` y el `0.0` todo lo demas es `false` )
+- `env(int:FOO)` => procesar como int
+- `env(float:FOO)` => procesar como float
+- `env(const:FOO)` => procesar como const
+- `env(base64:FOO)` => procesar como base64
+- `env(json:FOO)` => procesar como json
+- `env(resolve:FOO)` => si el contenido de `FOO` incluye un parametro (con la sintaxis `%parameter_name%`), se reemplazara el parametro con ese valor
+- `env(csv:FOO)` => procesar como csv
+- `env(file:FOO)` => retorna el contenido de un archivo cual directorio es el valor de `FOO``
+- `env(require:FOO)` => El `require()` de PHP, retorna el valor que retorna la función en base al archivo
+- `env(trim:FOO)` => Remueve los espacios de inicio y fin de la variable
+- `env(key:FOO:BAR)` => recupera el valor asociado con la llave `FOO`del array que está contenido en `BAR`de la variable de entorno 
+
+        # config/services.yaml
+        parameters:
+            env(SECRETS_FILE): '/opt/application/.secrets.json'
+            database_password: '%env(key:database_password:json:file:SECRETS_FILE)%'
+            # if SECRETS_FILE contents are: {"database_password": "secret"} it returns "secret"
+- `env(default:fallback_param:BAR)` => retorna el parametro `fallback_param` si la variable `BAR` no está disponible
+- `env(url:FOO)` => procesa una URL absoluta y retorna sus componentes como un array asociativo
+
+        # config/packages/mongodb.yaml
+        mongo_db_bundle:
+            clients:
+                default:
+                    hosts:
+                        - { host: '%env(string:key:host:url:MONGODB_URL)%', port: '%env(int:key:port:url:MONGODB_URL)%' }
+                    username: '%env(string:key:user:url:MONGODB_URL)%'
+                    password: '%env(string:key:pass:url:MONGODB_URL)%'
+            connections:
+                default:
+                    database_name: '%env(key:path:url:MONGODB_URL)%'
+
+- `env(query_string:FOO)` => Procesa la query de una url y retorna sus componenetes como un array asociativo
+
+        # .env
+        MONGODB_URL="mongodb://db_user:db_password@127.0.0.1:27017/db_name?timeout=3000"
+
+        # config/packages/mongodb.yaml
+        mongo_db_bundle:
+            clients:
+                default:
+                    # ...
+                    connectTimeoutMS: '%env(int:key:timeout:query_string:MONGODB_URL)%'
+
+**Pecacuición: Tener cuidado de hacer dump del contenido de las variables `$_SERVER` y `$_ENV` o mostrar el contenido de `phpinfo()` esto expondrá información sensible**
+
+### Configurando Variables de Entorno los Archivos .env
+
+En lugar de definir variables de entorno en la terminal o e el servidor web, Symfony provee una conveniente forma de defirnirlos dentro del archivo `.env` ubicado en la raiz del proyecto.
+
+El archivo `.env` se lee y se analiza en cada petición y se sus variables se agregan a las variables de PHP `$_ENV` y `$_SERVER`. Ninguna variable de entorno existente será sobre escrita por los valores definidos en `.env` pero se pueden combinar las dos.
+
+Por ejemplo, para definir la variable de entorno `DATABASE_URL` mostrada anteriormente, puedes agregaar:
+
+    # .env
+    DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name"
+
+Podrías hacer commit de este archivo a tu repositorio y solo contendria los parametros por defecto necesarios en tu entorno local. Este archivo no contiene las variables de producción.
+
+Además de tus propias variables de entorno, este archivo `.env` también contendra las variables de entorno definidas por los paquetes de terceros instalados en tu aplicación (estos se agregar automaticamente por Symfony Flex cuando instalas paquetes).
+
+**Tip: Como el archivo `.env` es leido y analizado en cada petición, no es necesario limpiar el cache de Symfony o reiniciar el contenedor de PHP si usas Docker**
+
+### .env File Syntax
+
+- Se agregan comentarios con poniendo como prefijo el signo `#`
+- Puedes usar variables de entorno en los valores usando el prefijo `$`
+
+      DB_USER=root
+      DB_PASS=${DB_USER}pass # include the user as a password prefix
+
+**Tip: Al ser `.env` un archivo regular de scripts para la terminal, puedes hacer `source` de el en tus propios scripts de la terminal``
+
+      $ source .env
+
+### Anular variables de entorno con .env.local
+
+Si necesitas anular un valor de entorno (EJ: diferentes valores en tu maquina local), puedes hacerlo con el archivo `.env.local``
+
+      # .env.local
+      DATABASE_URL="mysql://root:@127.0.0.1:3306/my_database_name"
+
+Este archivo debería ser ingnorado por git y no deberías subirse al repositorio del proyecto. Otros archivos `.env`estaran disponibles para asignar variables de entorno solo en las situaciones correctas:
+
+- `.env` Define los valores por defecto de las variables de entorno necesarias en la aplicación
+- `.env.local` anula los valores por defecto de todos los entornos pero solo en la maquina que contenga el archivo. Este archivo no debería ser guardado en el repositorio y debe ser ignorado en el entorno de`test` (porque los test deberían producir el mismo resultado para todos)
+- `.env<enviroment>` (E.J. `.env.test`): anula las variables de entorno solo para un entorno pero para todas las maquinas (este archivo será subido al repositorio)
+- `.env.<enviroment>.local` (E.J. `.env.test.local`): define las variables de entorno especificas de la maquina, anula solo para un entorno. Es similar a `.env.local`, pero la anulación se aplica solo a un entorno.
+
+*Las varaibles de entorno reales siempre tendrán prioridad sobre las variables de entorno creadas con cualquier archivo `.env`*
+
+Los archivos `.env` y `.env.<enviroment>`siempre deberían cargarse en el repositorio porque estos seran siemre los mismo para las maquinas de todos los desarrolladores. De todas formas, el archivo env que finaliza con `.local` (`.env.local` y `.env.<enviroment>.local`) **no deberían ser cargados al repositorio** porque solo tu los usaras. De hecho, el archivo `.gitignore` que viene con Symfony previene esto desde el principio.
+
+### Configruando las Variables de Entorno en Producción
+
+En producción, el archivo `.env` es analizado y cargado en cada request. Así que la forma más facil de definir variables en tu entorno local es creado un archiv `.env.local` en el servidor de producción con los valores de producción.
+
+Para mejorar el performance, tu puedes opcionalmente correr el comando `dump-env` (disponible en Symfony Flex 1.2 o superior).
+
+      # analiza TODOS los .env files y copia estos valores a `.env.loca.php`
+      $ composer dump-env prod
+
+Despues de correr este comando, Symfony cargará el archivo `.env.local.php`para obtener las variables de entorno y no gastará tiempo analizando los archivos `.env`
+
+***Tip: Actualiza tus herramientas o flujos de trabajo para correr el comando `dump-env` despues de cada despliegue (deploy) para mejorar el performance de la aplicación***
+
+### Encriptando Variables de Entorno (Secrets)
+
+En lugar de definir variables de entorno reales o agregarlas a el archivo `.env`, si el valor de la variable es sensible (E.J. Una key de API o una contraseña de base de datos), puedes encriptar los valores usando el sistema de administración de secretos (https://symfony.com/doc/4.4/configuration/secrets.html).
+
+### Listando las Variables de Entorno
+
+- Independientemente de como esten establecidas las vairables de entorno, puedes ver el lsitado completo de sus valores con el comando:
+
+      $ php bin/console debug:container --env-vars
+
+- Puedes filtrar entre la lista de variables por nombre
+
+      $ php bin/console debug:container --env-vars foo
+
+- O ver todos los detalles para una variable de entorno especifica
+
+      $ php bin/console debug:container --env-var=FOO
+
+### Acediendo a los Parametros de Configuración
+
+Los controlladores y servicios pueden acceder a todos los parametros de configuración. Esto incluye ambos, los parametros definidos por el desarrollador y los parametros creados por paquetes/bundles. Corre el siguiente parametro y veras todos los parametros existentes en la aplicación:
+
+      $ php bin/console debug:container --parameters
+
+En los controladores que extienden de `AbstractController`, usa el la función helper getParameter():
+
+      $this->getParameter('kernel.project_dir')
+      $this->getParameter('app.admin_email')
+
+En los servicios y controladores que no exitienden de `AbstractController`, inyecta los parametros como argumentos en sus contructores. Deberas inyectarlos explicitamente porque el servicio de cableado automatico (autowiring) no funciona para parametros:
+
+      # config/services.yaml
+      parameters:
+          app.contents_dir: '...'
+
+      services:
+          App\Service\MessageGenerator:
+              arguments:
+                  $contentsDir: '%app.contents_dir%'
+
+Si inyectas el mismo parametro una y otra vez, en su lugar usa la opción `services._defaults.bind`. Los argumentos definidos en esta opcion serán inyectados automaticamente siempre que un servicio contructor o una acción del controllador defina un argumento con exactamente el mismo nombre. Por Ejemplo, para inyectar el valor del parametro `kernel.project_dir` siempre que un servicio/controlador defina un argumento `$projectDir`, usa esto:
+
+        # config/services.yaml
+        services:
+            _defaults:
+                bind:
+                    # pass this value to any $projectDir argument for any service
+                    # that's created in this file (including controller arguments)
+                    $projectDir: '%kernel.project_dir%'
+
+            # ...
+
+Finalmente, si algún servicio necestia acceso a demasiados para metros, en lugar de inyectar cada uno de estos individualmente, puedes inyectar todos los parametros de la aplicación a la vez, usando la clase `ContainerBagInterface` en su constructor.
+
+          public function __construct(ContainerBagInterface $params)
+          ...
+          ...
+          $this->params->get('mailer_sender')
