@@ -101,4 +101,29 @@ class PlantillasController extends AbstractController
             'exist' => $loader->exists('plantillas/exists.html.twig'),
         ]);
     }
+
+    /**
+     * @Route("/extends-template", name="extends_template")
+     *
+     * @return Response
+     */
+    public function extendsTemplate(): Response
+    {
+        $articles = [
+            ['title' => 'titulo blog 1', 'body' => 'Contenido Blog 1'],
+            ['title' => 'titulo blog 2', 'body' => 'Contenido Blog 2'],
+        ];
+
+        return $this->render('plantillas/herencia/blog.html.twig', [
+            'articles' => $articles
+        ]);
+    }
+
+    /**
+     * @Route("/namespace-template", name="namespace_template")
+     */
+    public function namespaceTemplate(): Response
+    {
+        return $this->render('@namespace/index.html.twig');
+    }
 }
