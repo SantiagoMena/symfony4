@@ -3,7 +3,7 @@
 ## GETTING STARTED
 
 - [x] [Setup / Installation](#setup--installation)
-- [ ] Creating Pages
+- [x] [Creating Pages](#creando-paginas)
 - [x] [Routing / Generating URLs](#routing)
 - [x] [Controllers](#controllers)
 - [x] [Templates / Twig](#templates--twig)
@@ -233,6 +233,157 @@ EJ: `$page = $request->query->get(string $parametro, mixed $default);``
 
 <https://symfony-com.translate.goog/doc/4.4/controller/upload_file.html>
 `$request->files->get('foo');`
+
+## Creando Paginas
+
+Crear una nueva pagina - si es una pagina HTML o un JSON endpoint - es un proceso de dos pasos:
+
+1. **Crear una ruta:** Una ruta es la URL (E.J `/about`) para tus paginas y puntos a un controlador;
+2. **Crear un controlador:** Un controlador es la función de PHP que se escribe para crear la pagina. Puedes tomar la información de la consulta entrante y usarla para crear un objeto `Response` de Symfony, con el que puedes crear contenido HTML, un string JSON o incluso un binario como una imagen o PDF.
+
+**También puedes ver: Symfony posee un ciclo de vida para las HTTP Peticiones-Respuestas. Para encontrar más, mira [Symfony y Fundamentos de HTTP](https://symfony.com/doc/4.4/introduction/http_fundamentals.html)**
+
+## Creando una Pagina: Ruta y Controlador
+
+**Tip: Antes de continuar, asegurate de leer el articulo de [instalación](#setup--installation) y que puedas acceder a Symfony desde el explorador**
+
+Supón que desear crear una pagina - `/lucky/number` - que genera un código de la suerte (random) y lo imprime. Para hacer esto, crea una clase `Controller` y un método "controlador" dentro de el:
+
+      <?php
+      // src/Controller/LuckyController.php
+      namespace App\Controller;
+
+      use Symfony\Component\HttpFoundation\Response;
+
+      class LuckyController
+      {
+          public function number()
+          {
+              $number = random_int(0, 100);
+
+              return new Response(
+                  '<html><body>Lucky number: '.$number.'</body></html>'
+              );
+          }
+      }
+
+Ahora necesitas asociar esta función del controlador con una url publica (E.J `/lucky/number`) así el método `number()` sera llamado cuando el usuario busque esa url. Esta asociación es definida creando una **route** en el archivo `config/routes.yaml`:
+
+      # config/routes.yaml
+
+      # the "app_lucky_number" route name is not important yet
+      app_lucky_number:
+          path: /lucky/number
+          controller: App\Controller\LuckyController::number
+
+Eso es todo! Si estás usando el servidor web de Symfony, intenta acceder a el:
+[http://localhost:8000/lucky/number](http://localhost:8000/lucky/number)
+
+Si ves el número de la suerte impreso, felicitaciones! Pero antes de que corras a jugar la loteria, verifica cómo funciona. Recuerdas los dos pasos para crear la pagina?
+
+1. *Crear un controlador y un método*: Esta es una función donde creas la pagina y al final retornas un objeto `Response`. Puedes aprender más acerca de los [controladores](#controllers) en su sección respectiva, incluso como retornar respuestas de tipo JSON;
+2. *Crear una ruta*: En `config/routes.yaml`, la ruta define la URL de tu pagina (`path`) y que  `controller` llamar. Puedes aprender más acerca del [ruteo](#routing) en su propia sección.
+
+### Rutas con Anotaciones
+
+En lugar de definir tu ruta en YAML, Symfony además te permite usar *annotation* routes. Para hacer esto instala el paquete `annotation`:
+
+      $ composer require annotations
+
+Ahora puedes agregar directamente tu ruta en el controlador:
+
+      // src/Controller/LuckyController.php
+
+        // ...
+      + use Symfony\Component\Routing\Annotation\Route;
+
+        class LuckyController
+        {
+      +     /**
+      +      * @Route("/lucky/number")
+      +      */
+            public function number()
+            {
+                // this looks exactly the same
+            }
+        }
+
+Eso es todo! La pagina [http://localhost:8000/lucky/number](http://localhost:8000/lucky/number) funcionara exactamente igual que la anterior. Las anotaciones son la forma recomendada para configurar rutas.
+
+## Auto instalar recetas con Symfony Flex
+
+Quizá no lo has notado, pero cuando corres `composer require annotations` dos especiales cosas suceden, ambas gracias al poderoso plugin de Composer llamado [Flex](https://symfony.com/doc/4.4/setup.html#symfony-flex).
+
+Primero, `annotations` no es el real nombre del paquete: es un alias (EJ: un atajo) que flex resuelve de `sensio/framework-extra-bundle`.
+
+Segundo, despues de que el paquete ha sido descargado, Flex corrre la *receta* que es una lista de instrucciones que le dicen a Symfony como integrar un paquete externo. [Las recetas de Flex](https://flex.symfony.com/) existen para muchos paquetes y tienen muchas habilidades, como agregar archivos de configuración, crear directorios, editar el archivo `.gitignore` y agregar nueva configuración al archivo `.env`. Flex automatiza la instalación de paquetes, así puedes regresar a codificar.
+
+### El Comando bin/console
+
+Tu proyecto tiene una poderosa herramienta de depuración: el comando `bin/console`. Intenta correrlo:
+
+      $ php bin/console
+
+Puedes ver la lista de comando que pueden darte información de depuración, ayudarte a generar código, generar migraciones de bases de datos y mucho más. Cuanto más instales paquetes, más comandos veras.
+
+Para obtener la lista completa de rutas en tu sistema, usa el comando `debug:router`:
+
+      $ php bin/console debug:router
+
+Podrás ver la ruta `app_lucky_number` en la lista.
+
+Aprenderás más comandos a medida que continues!
+
+### Renderizando un Template
+
+Si estar retornando un HTML desde tu controlador probablemente quieras renderizar una plantilla. Afortunadamente Symfony viene con [Twig](#templates--twig): un lenguaje que es mínimo, poderoso y en realidad bastante divertido.
+
+Instala el paquete de twig con:
+
+      $ composer require twig
+
+Asegurate que `LuckyController` extienda de la clase base `AbstraactController`:
+
+        // src/Controller/LuckyController.php
+
+          // ...
+        + use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+        - class LuckyController
+        + class LuckyController extends AbstractController
+          {
+              // ...
+          }
+
+Ahora, usa el método `render()` para renderizar una plantilla. Pasa la variable `number` y podrás usarla en twig:
+
+      // src/Controller/LuckyController.php
+      namespace App\Controller;
+
+      use Symfony\Component\HttpFoundation\Response;
+      // ...
+
+      class LuckyController extends AbstractController
+      {
+          /**
+          * @Route("/lucky/number")
+          */
+          public function number(): Response
+          {
+              $number = random_int(0, 100);
+
+              return $this->render('lucky/number.html.twig', [
+                  'number' => $number,
+              ]);
+          }
+      }
+
+Los archivos de plantillas se encuentran en el directorio `templates/`, el cual fue creado automáticamente cuando instalaste Twig. Crea un nuevo directorio `templates/lucky` con un nuevo archivo `number.html.twig` dentro.
+
+      {# templates/lucky/number.html.twig #}
+      <h1>Your lucky number is {{ number }}</h1>
+
+
 
 ## Routing
 
