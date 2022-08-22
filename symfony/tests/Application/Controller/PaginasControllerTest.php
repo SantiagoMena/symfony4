@@ -21,4 +21,12 @@ class PaginasControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
     }
+
+    public function testTemplate()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/paginas/template');
+
+        $this->assertResponseIsSuccessful();
+    }
 }
