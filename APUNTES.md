@@ -3,7 +3,7 @@
 ## GETTING STARTED
 
 - [x] [Setup / Installation](#setup--installation)
-- [ ] Creating Pages
+- [ ] [Creating Pages](#creando-paginas)
 - [x] [Routing / Generating URLs](#routing)
 - [x] [Controllers](#controllers)
 - [x] [Templates / Twig](#templates--twig)
@@ -233,6 +233,50 @@ EJ: `$page = $request->query->get(string $parametro, mixed $default);``
 
 <https://symfony-com.translate.goog/doc/4.4/controller/upload_file.html>
 `$request->files->get('foo');`
+
+## Creando Paginas
+
+Crear una nueva pagina - si es una pagina HTML o un JSON endpoint - es un proceso de dos pasos:
+
+1. **Crear una ruta:** Una ruta es la URL (E.J `/about`) para tus paginas y puntos a un controlador;
+2. **Crear un controlador:** Un controlador es la función de PHP que se escribe para crear la pagina. Puedes tomar la información de la consulta entrante y usarla para crear un objeto `Response` de Symfony, con el que puedes crear contenido HTML, un string JSON o incluso un binario como una imagen o PDF.
+
+**También puedes ver: Symfony posee un ciclo de vida para las HTTP Peticiones-Respuestas. Para encontrar más, mira [Symfony y Fundamentos de HTTP](https://symfony.com/doc/4.4/introduction/http_fundamentals.html)**
+
+## Creando una Pagina: Ruta y Controlador
+
+**Tip: Antes de continuar, asegurate de leer el articulo de [instalación](#setup--installation) y que puedas acceder a Symfony desde el explorador**
+
+Supón que desear crear una pagina - `/lucky/number` - que genera un código de la suerte (random) y lo imprime. Para hacer esto, crea una clase `Controller` y un método "controlador" dentro de el:
+
+      <?php
+      // src/Controller/LuckyController.php
+      namespace App\Controller;
+
+      use Symfony\Component\HttpFoundation\Response;
+
+      class LuckyController
+      {
+          public function number()
+          {
+              $number = random_int(0, 100);
+
+              return new Response(
+                  '<html><body>Lucky number: '.$number.'</body></html>'
+              );
+          }
+      }
+
+Ahora necesitas asociar esta función del controlador con una url publica (E.J `/lucky/number`) así el método `number()` sera llamado cuando el usuario busque esa url. Esta asociación es definida creando una **route** en el archivo `config/routes.yaml`:
+
+      # config/routes.yaml
+
+      # the "app_lucky_number" route name is not important yet
+      app_lucky_number:
+          path: /lucky/number
+          controller: App\Controller\LuckyController::number
+
+
 
 ## Routing
 

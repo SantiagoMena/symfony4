@@ -11,3 +11,7 @@ ruta_redireccion:
       permanent: true
       keepQueryParams: true
       keepRequestMethod: true
+
+paginas:
+   path: /paginas/numero
+   controller: App\Controller\PaginasController::numero
