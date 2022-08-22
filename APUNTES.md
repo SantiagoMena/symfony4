@@ -2,7 +2,7 @@
 
 #### GETTING STARTED
 
-- [x] Setup / Installation
+- [x] [Setup / Installation](#setup--installation)
 - [x] Creating Pages
 - [x] Routing / Generating URLs
 - [x] Controllers
