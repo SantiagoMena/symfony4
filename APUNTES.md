@@ -3,7 +3,7 @@
 ## GETTING STARTED
 
 - [x] [Setup / Installation](#setup--installation)
-- [ ] [Creating Pages](#creando-paginas)
+- [x] [Creating Pages](#creando-paginas)
 - [x] [Routing / Generating URLs](#routing)
 - [x] [Controllers](#controllers)
 - [x] [Templates / Twig](#templates--twig)
@@ -329,6 +329,59 @@ Puedes ver la lista de comando que pueden darte información de depuración, ayu
 Para obtener la lista completa de rutas en tu sistema, usa el comando `debug:router`:
 
       $ php bin/console debug:router
+
+Podrás ver la ruta `app_lucky_number` en la lista.
+
+Aprenderás más comandos a medida que continues!
+
+### Renderizando un Template
+
+Si estar retornando un HTML desde tu controlador probablemente quieras renderizar una plantilla. Afortunadamente Symfony viene con [Twig](#templates--twig): un lenguaje que es mínimo, poderoso y en realidad bastante divertido.
+
+Instala el paquete de twig con:
+
+      $ composer require twig
+
+Asegurate que `LuckyController` extienda de la clase base `AbstraactController`:
+
+        // src/Controller/LuckyController.php
+
+          // ...
+        + use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+        - class LuckyController
+        + class LuckyController extends AbstractController
+          {
+              // ...
+          }
+
+Ahora, usa el método `render()` para renderizar una plantilla. Pasa la variable `number` y podrás usarla en twig:
+
+      // src/Controller/LuckyController.php
+      namespace App\Controller;
+
+      use Symfony\Component\HttpFoundation\Response;
+      // ...
+
+      class LuckyController extends AbstractController
+      {
+          /**
+          * @Route("/lucky/number")
+          */
+          public function number(): Response
+          {
+              $number = random_int(0, 100);
+
+              return $this->render('lucky/number.html.twig', [
+                  'number' => $number,
+              ]);
+          }
+      }
+
+Los archivos de plantillas se encuentran en el directorio `templates/`, el cual fue creado automáticamente cuando instalaste Twig. Crea un nuevo directorio `templates/lucky` con un nuevo archivo `number.html.twig` dentro.
+
+      {# templates/lucky/number.html.twig #}
+      <h1>Your lucky number is {{ number }}</h1>
 
 
 
