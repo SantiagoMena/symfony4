@@ -310,6 +310,27 @@ Ahora puedes agregar directamente tu ruta en el controlador:
 
 Eso es todo! La pagina [http://localhost:8000/lucky/number](http://localhost:8000/lucky/number) funcionara exactamente igual que la anterior. Las anotaciones son la forma recomendada para configurar rutas.
 
+## Auto instalar recetas con Symfony Flex
+
+Quizá no lo has notado, pero cuando corres `composer require annotations` dos especiales cosas suceden, ambas gracias al poderoso plugin de Composer llamado [Flex](https://symfony.com/doc/4.4/setup.html#symfony-flex).
+
+Primero, `annotations` no es el real nombre del paquete: es un alias (EJ: un atajo) que flex resuelve de `sensio/framework-extra-bundle`.
+
+Segundo, despues de que el paquete ha sido descargado, Flex corrre la *receta* que es una lista de instrucciones que le dicen a Symfony como integrar un paquete externo. [Las recetas de Flex](https://flex.symfony.com/) existen para muchos paquetes y tienen muchas habilidades, como agregar archivos de configuración, crear directorios, editar el archivo `.gitignore` y agregar nueva configuración al archivo `.env`. Flex automatiza la instalación de paquetes, así puedes regresar a codificar.
+
+### El Comando bin/console
+
+Tu proyecto tiene una poderosa herramienta de depuración: el comando `bin/console`. Intenta correrlo:
+
+      $ php bin/console
+
+Puedes ver la lista de comando que pueden darte información de depuración, ayudarte a generar código, generar migraciones de bases de datos y mucho más. Cuanto más instales paquetes, más comandos veras.
+
+Para obtener la lista completa de rutas en tu sistema, usa el comando `debug:router`:
+
+      $ php bin/console debug:router
+
+
 
 ## Routing
 
