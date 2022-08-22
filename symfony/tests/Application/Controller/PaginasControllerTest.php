@@ -13,4 +13,12 @@ class PaginasControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
     }
+
+    public function testAnotaciones(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/paginas/anotaciones');
+
+        $this->assertResponseIsSuccessful();
+    }
 }

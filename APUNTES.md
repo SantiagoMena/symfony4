@@ -276,6 +276,39 @@ Ahora necesitas asociar esta función del controlador con una url publica (E.J `
           path: /lucky/number
           controller: App\Controller\LuckyController::number
 
+Eso es todo! Si estás usando el servidor web de Symfony, intenta acceder a el:
+[http://localhost:8000/lucky/number](http://localhost:8000/lucky/number)
+
+Si ves el número de la suerte impreso, felicitaciones! Pero antes de que corras a jugar la loteria, verifica cómo funciona. Recuerdas los dos pasos para crear la pagina?
+
+1. *Crear un controlador y un método*: Esta es una función donde creas la pagina y al final retornas un objeto `Response`. Puedes aprender más acerca de los [controladores](#controllers) en su sección respectiva, incluso como retornar respuestas de tipo JSON;
+2. *Crear una ruta*: En `config/routes.yaml`, la ruta define la URL de tu pagina (`path`) y que  `controller` llamar. Puedes aprender más acerca del [ruteo](#routing) en su propia sección.
+
+### Rutas con Anotaciones
+
+En lugar de definir tu ruta en YAML, Symfony además te permite usar *annotation* routes. Para hacer esto instala el paquete `annotation`:
+
+      $ composer require annotations
+
+Ahora puedes agregar directamente tu ruta en el controlador:
+
+      // src/Controller/LuckyController.php
+
+        // ...
+      + use Symfony\Component\Routing\Annotation\Route;
+
+        class LuckyController
+        {
+      +     /**
+      +      * @Route("/lucky/number")
+      +      */
+            public function number()
+            {
+                // this looks exactly the same
+            }
+        }
+
+Eso es todo! La pagina [http://localhost:8000/lucky/number](http://localhost:8000/lucky/number) funcionara exactamente igual que la anterior. Las anotaciones son la forma recomendada para configurar rutas.
 
 
 ## Routing
