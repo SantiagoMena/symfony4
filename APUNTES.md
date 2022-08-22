@@ -1,15 +1,15 @@
 # Apuntes Symfony 4
 
-#### GETTING STARTED
+## GETTING STARTED
 
 - [x] [Setup / Installation](#setup--installation)
-- [x] Creating Pages
-- [x] Routing / Generating URLs
-- [x] Controllers
-- [x] Templates / Twig
-- [x] Configuration / Env Vars
+- [ ] Creating Pages
+- [x] [Routing / Generating URLs](#routing)
+- [x] [Controllers](#controllers)
+- [x] [Templates / Twig](#templates--twig)
+- [x] [Configuration / Env Vars](#configurando-symfony)
 
-#### ARCHITECTURE
+## ARCHITECTURE
 
 - [ ] Requests / Responses
 - [ ] Kernel
@@ -18,7 +18,7 @@
 - [ ] Contracts
 - [ ] Bundles
 
-#### THE BASICS
+## THE BASICS
 
 - [ ] Databases / Doctrine
 - [ ] Forms
@@ -28,7 +28,7 @@
 - [ ] Logger
 - [ ] Errors / Debugging
 
-#### ADVANCED TOPICS
+## ADVANCED TOPICS
 
 - [ ] Console
 - [ ] Mailer / Emails
@@ -38,7 +38,7 @@
 - [ ] Serialization
 - [ ] Translation / i18n
 
-#### SECURITY
+## SECURITY
 
 - [ ] Introduction
 - [ ] Users
@@ -48,7 +48,7 @@
 - [ ] CSRF
 - [ ] LDAP
 
-#### FRONT-END
+## FRONT-END
 
 - [ ] Symfony UX / Stimulus
 - [ ] Webpack Encore
@@ -58,7 +58,7 @@
 - [ ] Web Assets
 - [ ] WebLink
 
-#### UTILITIES
+## UTILITIES
 
 - [ ] HTTP Client
 - [ ] Files / Filesystem
@@ -69,7 +69,7 @@
 - [ ] UID / UUID
 - [ ] YAML Parser
 
-#### PRODUCTION
+## PRODUCTION
 
 - [ ] Deployment
 - [ ] Performance
