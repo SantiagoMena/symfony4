@@ -1,6 +1,6 @@
 # Symfony 4.4
 
-Repositorio de aprendizaje del lenguaje Go siguiendo el sitio oficial: [https://symfony.com/doc/4.4/](https://symfony.com/doc/4.4/index.html)
+Repositorio de aprendizaje del framework Symfony versión 4.4 siguiendo el sitio oficial: [https://symfony.com/doc/4.4/](https://symfony.com/doc/4.4/index.html)
 
 📝[Ingresar a los Apuntes](APUNTES.md)
 
