@@ -11,7 +11,7 @@
 
 ## ARCHITECTURE
 
-- [ ] Requests / Responses
+- [ ] [Requests / Responses](#el-componente-httpkernel)
 - [ ] Kernel
 - [ ] Services / DI
 - [ ] Events
@@ -382,8 +382,6 @@ Los archivos de plantillas se encuentran en el directorio `templates/`, el cual 
 
       {# templates/lucky/number.html.twig #}
       <h1>Your lucky number is {{ number }}</h1>
-
-
 
 ## Routing
 
@@ -1095,3 +1093,96 @@ Finalmente, si algún servicio necestia acceso a demasiados para metros, en luga
           ...
           ...
           $this->params->get('mailer_sender')
+
+## El Componente HttpKernel
+
+El componente HttpKernel provee un proceso estructurado para convertir una `Request` en una `Response` haciendo uso del componente `EventDispatcher`. Es bastante flexible para crear marcos de trabajo full-stack (Symfony), un micro-framework (Silex) o avanzados sistemas CMS (Drupal).
+
+### Instalación de HttpKernel
+
+      $ composer require symfony/http-kernel
+
+**Nota:** Si instalas el componente fuera de una aplicación de Symfony, necesitaras el archivo `vendor/autoload.php` en tu código para habilitar el mecanismo de autocarga proveido por Composer. Lee [este articulo] (https://symfony.com/doc/4.4/components/using_components.html) para más detalles.
+
+### El flujo de una Consulta (Request)
+
+**Véase tambien**: Este articulo explica como usar las caracteristicas de `HttpKernel` como un componente independiente de cualquier aplicación de PHP. En las aplicaciones de Symfony todo está configurado y listo para usar. Lea los articulos [Controlador](#controllers) y [Eventos y Escuchadores de Eventos](https://symfony.com/doc/4.4/event_dispatcher.html) para aprender cómo usarlos para crear controladores y definir eventos en las aplicaciones de Symfony.
+
+Cada interacción web HTTP comienta con una consulta y termina con una respuesta. Tu trabajo como desarrollador es crear código PHP que lea la información de la consulta (E.J. La URL) y crear y retornar una respuesta (E.J una pagina HTML o un string JSON). Esto es simplificada perspectiva general del flujo de trabajo de una consulta en la aplicaciones Symfomy:
+
+1. El **usuario** pregunta por un **recurso** en un **navegador**
+2. El **navegador** envia una **consulta** al **servidor**
+3. **Symfony** da a la **aplicación** un objeto **Request**
+4. La aplicación genera un objeto **Response** usando la información del objeto **Request**
+5. El **servidor** envía de vuelta la **respuesta** al **navegador**
+6. El **explorador** muestra el **recurso** al usuario
+
+Normalmente, algunos tipos de marcos de trabajo (frameworks) o sistemas son creados para gestionar tareas repetitivas (E.J: ruteo, seguridad, etc) para que un desarrollador pueda crear cada pagina de la aplicación. La forma en que se construyen estos sistemas varia demasiado. El componente `HttpKernel` provee una interface que formaliza el proceso de iniciar una consulta (request) y de crear una apropiada respuespuesta (response). El componente está destinado a ser el corazon de cualquier aplicación o framework, no importa la variedad de arquitectura de ese sistema:
+
+    namespace Symfony\Component\HttpKernel;
+
+    use Symfony\Component\HttpFoundation\Request;
+
+    interface HttpKernelInterface
+    {
+        // ...
+
+        /**
+        * @return Response A Response instance
+        */
+        public function handle(
+            Request $request,
+            $type = self::MASTER_REQUEST,
+            $catch = true
+        );
+    }
+
+Internamente, [HttpKernel::handle()](https://github.com/symfony/symfony/blob/4.4/src/Symfony/Component/HttpKernel/HttpKernel.php#method_handle) - la implementación concreta de [HttpKernelInterface::handle()](https://github.com/symfony/symfony/blob/4.4/src/Symfony/Component/HttpKernel/HttpKernelInterface.php#method_handle) - define un flujo de trabajo que empieza con una [Request](https://github.com/symfony/symfony/blob/4.4/src/Symfony/Component/HttpFoundation/Request.php) y termina con una [Response](https://github.com/symfony/symfony/blob/4.4/src/Symfony/Component/HttpFoundation/Response.php).
+
+<img src="assets_apuntes/httpkernel-workflow.png">
+
+Los detalles exacto de este flujo de trabajo es la clave para entender cómo el nucle (kernel) funciona (y como el framework de Symfony o cualquier otra libreria usa el kernel).
+
+### HttpKernel: Dirigido por Eventos
+
+El método `HttpKernel::handle()` funciona internamente despachando eventos. Esto hace que el método sea flexible, pero un poco abstracto, debio a que todo el "trabajo" de un "framework/aplicacion" creado con `HttpKernel` es actualmente hecho por eventos oyentes (event listeners).
+
+Para ayudar a explicar este proceso, este documento mostrara cada uno de los pasos del proceso y hablara acerca de como una implementación especifica de `HttpKernel` - Symfony Framework - funciona.
+
+Inicialmente, usar el [`HttpKernel`](https://github.com/symfony/symfony/blob/4.4/src/Symfony/Component/HttpKernel/HttpKernel.php) no requiere de muchos pasos. Creas un [despachador de eventos (event dipatcher)](https://symfony.com/doc/4.4/components/event_dispatcher.html) y [un controlador (controller) y un solucionador de argumentos (argument resolver)](https://symfony.com/doc/4.4/components/http_kernel.html#component-http-kernel-resolve-controller) (se explica a continuación). Para dejar tu nucleo (kernel) trabajando, necesitas agregar más eventos oyentes (event listeners) a los eventos comentados a continuación.
+
+    use Symfony\Component\EventDispatcher\EventDispatcher;
+    use Symfony\Component\HttpFoundation\Request;
+    use Symfony\Component\HttpFoundation\RequestStack;
+    use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
+    use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+    use Symfony\Component\HttpKernel\HttpKernel;
+
+    // crea la el objeto Request (Consulta)
+    $request = Request::createFromGlobals();
+
+    $dispatcher = new EventDispatcher();
+    // ... agrega algunos eventos oyentes (event listeners)
+
+    // crea tu controlador y los solucionador de argumentos
+    $controllerResolver = new ControllerResolver();
+    $argumentResolver = new ArgumentResolver();
+
+    // se instancia el kernel
+    $kernel = new HttpKernel($dispatcher, $controllerResolver, new RequestStack(), $argumentResolver);
+
+    // Ejecutar el nucleo (kernel), lo que convierte la solicitud en una respuesta
+    // despachando eventos, llamando al controlador, y retornando una respuesta
+    $response = $kernel->handle($request);
+
+    // envia las cabeceras e imprime el contenido 
+    $response->send();
+
+    // activa/gatilla el evento kernel.terminate
+    $kernel->terminate($request, $response);
+
+Mira "[El Componente HttpKernel](https://symfony.com/doc/4.4/components/http_kernel.html#http-kernel-working-example)"  para ver más sobre la implementación concreta.
+
+Para información general o agregar más eventos oyentes, mira [El Componente HttpKernel](https://symfony.com/doc/4.4/components/http_kernel.html#http-kernel-creating-listener)
+
+### 1) El evento `kernel.request`
